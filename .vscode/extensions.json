@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "antfu.goto-alias",
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "solidjs-community.solid-snippets",
+    "vscode.typescript-language-features",
+	"firefox-devtools.vscode-firefox-debug"
+  ]
+}
