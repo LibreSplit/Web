@@ -63,8 +63,6 @@ interface GithubButtonProps
   animationDuration?: number;
   /** Animation delay in seconds */
   animationDelay?: number;
-  /** Whether to start animation automatically */
-  autoAnimate?: boolean;
   /** Whether to show Github icon */
   showGithubIcon?: boolean;
   /** Whether to show star icon */
@@ -74,7 +72,7 @@ interface GithubButtonProps
   /** Whether stars should be filled */
   filled?: boolean;
   /** Repository URL for actual Github integration */
-  repoUrl?: string;
+  repoUrl: string;
   /** Button text label */
   label?: string;
   /** Use in-view detection to trigger animation */
@@ -97,7 +95,6 @@ function GithubButton(receivedProps: GithubButtonProps) {
       fixedWidth: true,
       animationDuration: 2,
       animationDelay: 0,
-      autoAnimate: true,
       variant: "default" as const,
       size: "default" as const,
       showGithubIcon: true,
@@ -120,7 +117,6 @@ function GithubButton(receivedProps: GithubButtonProps) {
     "fixedWidth",
     "animationDuration",
     "animationDelay",
-    "autoAnimate",
     "class",
     "variant",
     "size",
@@ -156,10 +152,9 @@ function GithubButton(receivedProps: GithubButtonProps) {
     return local.initialStars;
   };
 
-  const canAnimate = () => {
-    if (!local.stars) return local.autoAnimate;
-    return local.stars.state === "ready" || local.stars.state === "refreshing";
-  };
+  const canAnimate = () =>
+    local.stars &&
+    (local.stars.state === "ready" || local.stars.state === "refreshing");
 
   const hasResourceError = () => local.stars?.state === "errored";
 
@@ -287,7 +282,7 @@ function GithubButton(receivedProps: GithubButtonProps) {
         }),
         local.separator && "ps-0",
       )}
-      aria-label={local.repoUrl ? `Star ${local.label} on GitHub` : local.label}
+      aria-label={`Star ${local.label} on GitHub`}
       {...buttonProps}
     >
       <Show when={local.showGithubIcon}>

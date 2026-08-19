@@ -6,7 +6,7 @@ import { mergeProps } from "solid-js";
 interface AppFileSelectProps {
   label?: string;
   value: File | null;
-  onChange: (files: File | null) => void;
+  onChange: (file: File | null) => void;
   filters?: { name: string; extensions: string[] }[];
 }
 
