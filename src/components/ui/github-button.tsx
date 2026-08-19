@@ -43,7 +43,10 @@ type UseInViewOptions = IntersectionObserverInit & { once?: boolean };
 
 interface GithubButtonProps
   extends
-    Omit<ComponentProps<"button">, "class" | "onClick" | "onKeyDown" | "ref">,
+    Omit<
+      ComponentProps<"a">,
+      "class" | "href" | "onClick" | "onKeyDown" | "ref"
+    >,
     VariantProps<typeof githubButtonVariants> {
   class?: string;
   /** Whether to round stars */
@@ -79,11 +82,11 @@ interface GithubButtonProps
   /** In-view options */
   inViewOptions?: UseInViewOptions;
   /** Click event handler */
-  onClick?: JSX.EventHandler<HTMLButtonElement, MouseEvent>;
+  onClick?: JSX.EventHandler<HTMLAnchorElement, MouseEvent>;
   /** Keydown event handler */
-  onKeyDown?: JSX.EventHandler<HTMLButtonElement, KeyboardEvent>;
+  onKeyDown?: JSX.EventHandler<HTMLAnchorElement, KeyboardEvent>;
   /** Custom element ref */
-  ref?: HTMLButtonElement | ((element: HTMLButtonElement) => void);
+  ref?: HTMLAnchorElement | ((element: HTMLAnchorElement) => void);
 }
 
 function GithubButton(receivedProps: GithubButtonProps) {
@@ -105,6 +108,8 @@ function GithubButton(receivedProps: GithubButtonProps) {
       label: "",
       useInViewTrigger: false,
       inViewOptions: { once: true } as UseInViewOptions,
+      target: "_blank",
+      rel: "noopener noreferrer",
     },
     receivedProps,
   );
@@ -125,8 +130,6 @@ function GithubButton(receivedProps: GithubButtonProps) {
     "separator",
     "filled",
     "repoUrl",
-    "onClick",
-    "onKeyDown",
     "label",
     "useInViewTrigger",
     "inViewOptions",
@@ -138,7 +141,7 @@ function GithubButton(receivedProps: GithubButtonProps) {
   const [starProgress, setStarProgress] = createSignal(0);
   const [hasAnimated, setHasAnimated] = createSignal(false);
   const [isInView, setIsInView] = createSignal(false);
-  let buttonRef: HTMLButtonElement | undefined;
+  let buttonRef: HTMLAnchorElement | undefined;
   let animationFrame: number | undefined;
   let animationTimer: number | undefined;
 
@@ -267,66 +270,15 @@ function GithubButton(receivedProps: GithubButtonProps) {
 
   onCleanup(cancelAnimation);
 
-  const navigateToRepo = () => {
-    if (!local.repoUrl) return;
-
-    try {
-      // Create a temporary anchor element for reliable navigation
-      const link = document.createElement("a");
-      link.href = local.repoUrl;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      // Temporarily add to DOM and click
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch {
-      // Fallback to window.open
-      try {
-        window.open(local.repoUrl, "_blank", "noopener,noreferrer");
-      } catch {
-        // Final fallback
-        window.location.href = local.repoUrl;
-      }
-    }
-  };
-
-  const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
-    event,
-  ) => {
-    if (local.onClick) {
-      local.onClick(event);
-      return;
-    }
-
-    if (local.repoUrl) navigateToRepo();
-    else if (!hasAnimated()) startAnimation();
-  };
-
-  const handleKeyDown: JSX.EventHandler<HTMLButtonElement, KeyboardEvent> = (
-    event,
-  ) => {
-    if (local.onKeyDown) {
-      local.onKeyDown(event);
-      return;
-    }
-
-    // Handle Enter and Space key presses for accessibility
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      if (local.repoUrl) navigateToRepo();
-      else if (!hasAnimated()) startAnimation();
-    }
-  };
-
-  const setButtonRef = (element: HTMLButtonElement) => {
+  const setButtonRef = (element: HTMLAnchorElement) => {
     buttonRef = element;
     if (typeof local.ref === "function") local.ref(element);
   };
 
   return (
-    <button
+    <a
       ref={setButtonRef}
+      href={local.repoUrl}
       class={cn(
         githubButtonVariants({
           variant: local.variant,
@@ -335,10 +287,6 @@ function GithubButton(receivedProps: GithubButtonProps) {
         }),
         local.separator && "ps-0",
       )}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      role="button"
-      tabIndex={0}
       aria-label={local.repoUrl ? `Star ${local.label} on GitHub` : local.label}
       {...buttonProps}
     >
@@ -393,7 +341,7 @@ function GithubButton(receivedProps: GithubButtonProps) {
           </Show>
         </div>
       </Show>
-    </button>
+    </a>
   );
 }
 

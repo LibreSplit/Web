@@ -5,37 +5,21 @@ import { mergeProps } from "solid-js";
 
 interface AppFileSelectProps {
   label?: string;
-  value: File | File[] | null;
-  onChange: (files: File | File[] | null) => void;
-  multiple?: boolean;
+  value: File | null;
+  onChange: (files: File | null) => void;
   filters?: { name: string; extensions: string[] }[];
 }
 
-/**
- * Reasonable max number of files in a file picker
- */
-const MAX_FILES = 100;
-
 export default function AppFileSelect(receivedProps: AppFileSelectProps) {
-  const props = mergeProps(
-    { label: "Select file:", multiple: false },
-    receivedProps,
-  );
+  const props = mergeProps({ label: "Select file:" }, receivedProps);
 
   const display = () => {
     if (!props.value) return "No file chosen.";
-    if (Array.isArray(props.value)) {
-      return props.value.map((file) => file.name).join(", ");
-    }
     return props.value.name;
   };
 
   const handleChange = (files: File[]) => {
-    if (props.multiple) {
-      props.onChange(files);
-    } else {
-      props.onChange(files[0] ?? null);
-    }
+    props.onChange(files[0] ?? null);
   };
 
   const accept = () =>
@@ -46,8 +30,7 @@ export default function AppFileSelect(receivedProps: AppFileSelectProps) {
   return (
     <FileField
       class="space-y-2 px-8"
-      multiple={props.multiple}
-      maxFiles={props.multiple ? MAX_FILES : 1}
+      multiple={false}
       accept={accept()}
       onFileChange={({ acceptedFiles }) => handleChange(acceptedFiles)}
     >

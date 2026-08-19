@@ -19,7 +19,7 @@ type AppGitHubGenericMarkdownProps = {
 
 export function AppGitHubGenericMarkdown(props: AppGitHubGenericMarkdownProps) {
   const query = useQuery(() => ({
-    queryKey: ["markdown-text"],
+    queryKey: [props.url],
     queryFn: () => fetchMarkdown(props.url),
     enabled: !!props.url,
   }));

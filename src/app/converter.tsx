@@ -9,8 +9,7 @@ export function Converter() {
   const [fileText, setFileText] = createSignal<string | null>(null);
   const [result, setResult] = createSignal<string | null>(null);
 
-  const handleSelectChange = async (files: File | File[] | null) => {
-    const file = Array.isArray(files) ? (files[0] ?? null) : files;
+  const handleSelectChange = async (file: File | null) => {
     setSelectedFile(file);
     setResult(null);
     setFileText(null);
@@ -62,7 +61,6 @@ export function Converter() {
           label="Select LiveSplit file:"
           value={selectedFile()}
           onChange={handleSelectChange}
-          multiple={false}
           filters={[{ name: "LiveSplit (.lss)", extensions: ["lss", "xml"] }]}
         />
       </div>

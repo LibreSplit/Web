@@ -5,7 +5,6 @@ import {
   onCleanup,
   splitProps,
 } from "solid-js";
-import { Motion } from "solid-motionone";
 
 interface TextScrambleProps extends Omit<ComponentProps<"span">, "children"> {
   children: string;
@@ -21,7 +20,7 @@ function getRandomChar(charSet: string) {
 }
 
 export const TextScramble = (props: TextScrambleProps) => {
-  const [local, motionProps] = splitProps(props, [
+  const [local, spanProps] = splitProps(props, [
     "children",
     "speed",
     "characterSet",
@@ -58,5 +57,5 @@ export const TextScramble = (props: TextScrambleProps) => {
     onCleanup(() => clearInterval(interval));
   });
 
-  return <Motion.span {...motionProps}>{text()}</Motion.span>;
+  return <span {...spanProps}>{text()}</span>;
 };
