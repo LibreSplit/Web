@@ -4,7 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Link } from "react-router";
+import { For } from "solid-js";
 
 const docs = [
   {
@@ -37,20 +37,22 @@ const docs = [
 
 export function Docs() {
   return (
-    <div className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="mb-8 text-3xl font-bold">Documentation</h1>
+    <div class="mx-auto max-w-5xl px-6 py-12">
+      <h1 class="mb-8 text-3xl font-bold">Documentation</h1>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {docs.map((doc) => (
-          <Link key={doc.to} to={doc.to}>
-            <Card className="h-full transition hover:border-primary hover:shadow-lg">
-              <CardHeader>
-                <CardTitle>{doc.title}</CardTitle>
-                <CardDescription>{doc.description}</CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
-        ))}
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <For each={docs}>
+          {(doc) => (
+            <a href={doc.to}>
+              <Card class="h-full transition hover:border-primary hover:shadow-lg">
+                <CardHeader>
+                  <CardTitle>{doc.title}</CardTitle>
+                  <CardDescription>{doc.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            </a>
+          )}
+        </For>
       </div>
     </div>
   );

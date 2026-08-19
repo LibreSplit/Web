@@ -1,14 +1,13 @@
-import { useState } from "react";
-
 import AppFileSelect from "@/components/libresplit/AppFileSelect";
 import { AppSplitPreview } from "@/components/libresplit/AppSplitPreview";
 import init, { convert } from "@libresplit/converter";
 import wasmUrl from "@libresplit/converter/converter_bg.wasm?url";
+import { Show, createSignal } from "solid-js";
 
 export function Converter() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [fileText, setFileText] = useState<string | null>(null);
-  const [result, setResult] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = createSignal<File | null>(null);
+  const [fileText, setFileText] = createSignal<string | null>(null);
+  const [result, setResult] = createSignal<string | null>(null);
 
   const handleSelectChange = async (files: File | File[] | null) => {
     const file = Array.isArray(files) ? (files[0] ?? null) : files;
@@ -23,14 +22,15 @@ export function Converter() {
   };
 
   const handleSubmit = async () => {
-    if (!selectedFile) {
+    const file = selectedFile();
+    if (!file) {
       alert("Please select a file before submitting!");
       return;
     }
 
     try {
-      const text = await selectedFile.text();
-      await init(wasmUrl);
+      const text = await file.text();
+      await init({ module_or_path: wasmUrl });
       const converted = convert(text);
       setResult(converted);
     } catch (error) {
@@ -40,10 +40,12 @@ export function Converter() {
   };
 
   const handleDownload = () => {
-    if (!result || !selectedFile) return;
+    const converted = result();
+    const file = selectedFile();
+    if (!converted || !file) return;
 
-    const fileName = selectedFile.name.replace(/\.[^/.]+$/, ".json");
-    const blob = new Blob([result], { type: "application/json" });
+    const fileName = file.name.replace(/\.[^/.]+$/, ".json");
+    const blob = new Blob([converted], { type: "application/json" });
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement("a");
@@ -54,49 +56,51 @@ export function Converter() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-64px-24px)] flex-col space-y-4 overflow-hidden">
-      <div className="shrink-0 px-[100px]">
+    <div class="flex h-[calc(100vh-64px-24px)] flex-col space-y-4 overflow-hidden">
+      <div class="shrink-0 px-25">
         <AppFileSelect
           label="Select LiveSplit file:"
-          value={selectedFile}
+          value={selectedFile()}
           onChange={handleSelectChange}
           multiple={false}
           filters={[{ name: "LiveSplit (.lss)", extensions: ["lss", "xml"] }]}
         />
       </div>
 
-      <div className="flex shrink-0 items-center justify-center gap-2">
+      <div class="flex shrink-0 items-center justify-center gap-2">
         <button
           onClick={handleSubmit}
-          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
         >
           Convert
         </button>
         <button
           onClick={handleDownload}
-          disabled={!result}
-          className="rounded bg-gray-200 px-4 py-2 text-black disabled:opacity-50"
+          disabled={!result()}
+          class="rounded bg-gray-200 px-4 py-2 text-black disabled:opacity-50"
         >
           Download Splits
         </button>
       </div>
 
-      <div className="min-h-0 flex-1">
-        <div className="flex h-full min-h-0 w-full items-stretch justify-center gap-4">
-          {fileText && (
-            <div className="flex min-h-0 flex-1 flex-col">
-              <span className="mb-2 text-center font-semibold">LiveSplit:</span>
-              <AppSplitPreview text={fileText} className="h-full flex-1" />
-            </div>
-          )}
-          {result && (
-            <div className="flex min-h-0 flex-1 flex-col">
-              <span className="mb-2 text-center font-semibold">
-                LibreSplit:
-              </span>
-              <AppSplitPreview text={result} className="h-full flex-1" />
-            </div>
-          )}
+      <div class="min-h-0 flex-1">
+        <div class="flex h-full min-h-0 w-full items-stretch justify-center gap-4">
+          <Show when={fileText()}>
+            {(text) => (
+              <div class="flex min-h-0 flex-1 flex-col">
+                <span class="mb-2 text-center font-semibold">LiveSplit:</span>
+                <AppSplitPreview text={text()} class="h-full flex-1" />
+              </div>
+            )}
+          </Show>
+          <Show when={result()}>
+            {(converted) => (
+              <div class="flex min-h-0 flex-1 flex-col">
+                <span class="mb-2 text-center font-semibold">LibreSplit:</span>
+                <AppSplitPreview text={converted()} class="h-full flex-1" />
+              </div>
+            )}
+          </Show>
         </div>
       </div>
     </div>

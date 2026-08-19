@@ -9,7 +9,6 @@
   "singleQuote": false,
   "bracketSameLine": false,
   "importOrder": [
-    "^react$",
     "<THIRD_PARTY_MODULES>",
     "",
     "^@/components/(.*)$",

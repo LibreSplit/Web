@@ -1,6 +1,7 @@
-import { AppLoading } from "./AppLoading";
 import { Markdown } from "@/lib/markdown";
-import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@kobalte/core/skeleton";
+import { useQuery } from "@tanstack/solid-query";
+import { Match, Switch } from "solid-js";
 
 async function fetchMarkdown(url: string): Promise<string> {
   const res = await fetch(url);
@@ -16,22 +17,28 @@ type AppGitHubGenericMarkdownProps = {
   url: string;
 };
 
-export function AppGitHubGenericMarkdown({
-  url,
-}: AppGitHubGenericMarkdownProps) {
-  const { data, isLoading, error } = useQuery({
+export function AppGitHubGenericMarkdown(props: AppGitHubGenericMarkdownProps) {
+  const query = useQuery(() => ({
     queryKey: ["markdown-text"],
-    queryFn: () => fetchMarkdown(url),
-    enabled: !!url,
-  });
-
-  if (isLoading) return <AppLoading />;
-  if (error) return <div>Failed to fetch markdown from GitHub.</div>;
-  if (!data) return <div>Failed to fetch markdown from GitHub.</div>;
+    queryFn: () => fetchMarkdown(props.url),
+    enabled: !!props.url,
+  }));
 
   return (
-    <div>
-      <Markdown content={data} />
-    </div>
+    <Switch>
+      <Match when={query.isLoading}>
+        <Skeleton class="min-h-40 animate-pulse rounded-md bg-accent" />
+      </Match>
+      <Match when={query.error || !query.data}>
+        <div>Failed to fetch markdown from GitHub.</div>
+      </Match>
+      <Match when={query.data}>
+        {(data) => (
+          <div>
+            <Markdown content={data()} />
+          </div>
+        )}
+      </Match>
+    </Switch>
   );
 }

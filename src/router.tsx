@@ -7,24 +7,24 @@ import { Themes } from "./app/docs/themes";
 import { Troubleshooting } from "./app/docs/troubleshooting";
 import { Home } from "./app/home";
 import { NotFound } from "./app/not-found";
-import { Route, Routes } from "react-router";
+import { Route } from "@solidjs/router";
 
 export default function AppRouter() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/docs" element={<Docs />} />
-      <Route path="/converter" element={<Converter />} />
+    <>
+      <Route path="/" component={Home} />
+      <Route path="/docs" component={Docs} />
+      <Route path="/converter" component={Converter} />
 
       {/* Documentation pages pulled from GitHub. */}
-      <Route path="/docs/auto-splitters.md" element={<AutoSplitters />} />
-      <Route path="/docs/settings-keybinds.md" element={<SettingsKeybinds />} />
-      <Route path="/docs/split-files.md" element={<SplitFiles />} />
-      <Route path="/docs/themes.md" element={<Themes />} />
-      <Route path="/docs/troubleshooting.md" element={<Troubleshooting />} />
+      <Route path="/docs/auto-splitters.md" component={AutoSplitters} />
+      <Route path="/docs/settings-keybinds.md" component={SettingsKeybinds} />
+      <Route path="/docs/split-files.md" component={SplitFiles} />
+      <Route path="/docs/themes.md" component={Themes} />
+      <Route path="/docs/troubleshooting.md" component={Troubleshooting} />
 
       {/* Fall back on app's 404 page. This is because of the SPA routing trick with 404.html used in GitHub Pages. */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+      <Route path="*404" component={NotFound} />
+    </>
   );
 }

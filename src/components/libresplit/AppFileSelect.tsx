@@ -1,7 +1,7 @@
-import { useMemo, useRef } from "react";
-
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { FileField } from "@kobalte/core/file-field";
+import { mergeProps } from "solid-js";
 
 interface AppFileSelectProps {
   label?: string;
@@ -11,66 +11,58 @@ interface AppFileSelectProps {
   filters?: { name: string; extensions: string[] }[];
 }
 
-export default function AppFileSelect({
-  label = "Select file:",
-  value,
-  onChange,
-  multiple = false,
-  filters,
-}: AppFileSelectProps) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+/**
+ * Reasonable max number of files in a file picker
+ */
+const MAX_FILES = 100;
 
-  const display = useMemo(() => {
-    if (!value) return "No file chosen.";
-    if (Array.isArray(value)) {
-      return value.map((f) => f.name).join(", ");
+export default function AppFileSelect(receivedProps: AppFileSelectProps) {
+  const props = mergeProps(
+    { label: "Select file:", multiple: false },
+    receivedProps,
+  );
+
+  const display = () => {
+    if (!props.value) return "No file chosen.";
+    if (Array.isArray(props.value)) {
+      return props.value.map((file) => file.name).join(", ");
     }
-    return value.name;
-  }, [value]);
-
-  const handlePick = () => {
-    inputRef.current?.click();
+    return props.value.name;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) {
-      onChange(null);
-      return;
-    }
-
-    if (multiple) {
-      onChange(Array.from(files));
+  const handleChange = (files: File[]) => {
+    if (props.multiple) {
+      props.onChange(files);
     } else {
-      onChange(files[0]);
+      props.onChange(files[0] ?? null);
     }
   };
 
-  const accept = filters
-    ? filters.flatMap((f) => f.extensions.map((ext) => `.${ext}`)).join(",")
-    : undefined;
+  const accept = () =>
+    props.filters
+      ?.flatMap((filter) => filter.extensions.map((ext) => `.${ext}`))
+      .join(",");
 
   return (
-    <div className="space-y-2 px-8">
-      <span>{label}</span>
-      <div className="flex items-center">
-        <Input className="flex-1 rounded-r-none" value={display} readOnly />
-        <Button
+    <FileField
+      class="space-y-2 px-8"
+      multiple={props.multiple}
+      maxFiles={props.multiple ? MAX_FILES : 1}
+      accept={accept()}
+      onFileChange={({ acceptedFiles }) => handleChange(acceptedFiles)}
+    >
+      <FileField.Label>{props.label}</FileField.Label>
+      <div class="flex items-center">
+        <Input class="flex-1 rounded-r-none" value={display()} readonly />
+        <FileField.Trigger
+          as={Button}
           type="button"
-          onClick={handlePick}
-          className="rounded-l-none bg-gray-200 text-black hover:bg-blue-200"
+          class="rounded-l-none bg-gray-200 text-black hover:bg-blue-200"
         >
           Open
-        </Button>
+        </FileField.Trigger>
       </div>
-      <input
-        ref={inputRef}
-        type="file"
-        className="hidden"
-        multiple={multiple}
-        accept={accept}
-        onChange={handleChange}
-      />
-    </div>
+      <FileField.HiddenInput />
+    </FileField>
   );
 }
