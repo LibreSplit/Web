@@ -35,7 +35,7 @@ export function AppGitHubGenericMarkdown(props: AppGitHubGenericMarkdownProps) {
       <Match when={query.data}>
         {(data) => (
           <div>
-            <Markdown content={data()} />
+            <Markdown content={data()} sourceUrl={props.url} />
           </div>
         )}
       </Match>
