@@ -49,9 +49,9 @@ function copyIndexTo404(): Plugin {
 
       if (fs.existsSync(indexPath)) {
         fs.copyFileSync(indexPath, notFoundPath);
-        console.log("Copied index.html → 404.html for SPA fallback");
+        console.log("Copied index.html to 404.html for SPA fallback");
       } else {
-        console.warn("⚠️ index.html not found in dist directory");
+        console.warn("index.html not found in dist directory");
       }
     },
   };
