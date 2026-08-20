@@ -1,15 +1,14 @@
-import { AppNav } from "./components/libresplit/AppNav";
-import AppRouter from "./router";
+import type { ParentProps } from "solid-js";
 
-export default function App() {
+import { AppNav } from "./components/libresplit/AppNav";
+
+export default function App(props: ParentProps) {
   return (
     <div>
       <div>
         <AppNav />
       </div>
-      <div className="px-2">
-        <AppRouter />
-      </div>
+      <div class="px-2">{props.children}</div>
     </div>
   );
 }

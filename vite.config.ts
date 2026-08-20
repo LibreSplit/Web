@@ -1,14 +1,15 @@
-import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react-swc";
 import fs from "fs";
 import path from "path";
+
+import tailwindcss from "@tailwindcss/vite";
 import { type Plugin, defineConfig } from "vite";
 import sitemap from "vite-plugin-sitemap";
+import solid from "vite-plugin-solid";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
+    solid(),
     tailwindcss(),
     copyIndexTo404(),
     sitemap({
@@ -26,7 +27,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
   server: {
@@ -42,7 +43,7 @@ function copyIndexTo404(): Plugin {
   return {
     name: "copy-index-to-404",
     closeBundle() {
-      const distDir = path.resolve(__dirname, "dist");
+      const distDir = path.resolve(import.meta.dirname, "dist");
       const indexPath = path.join(distDir, "index.html");
       const notFoundPath = path.join(distDir, "404.html");
 

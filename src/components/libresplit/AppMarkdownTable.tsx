@@ -1,3 +1,5 @@
+import { For, type JSX, Show } from "solid-js";
+
 import {
   Table,
   TableBody,
@@ -10,69 +12,76 @@ import {
 
 type Align = "left" | "center" | "right" | null;
 
-type MarkdownTableCell = {
+interface MarkdownTableCell {
   type: "tableCell";
   children?: any[];
-};
+}
 
-type MarkdownTableRow = {
+interface MarkdownTableRow {
   type: "tableRow";
   children: MarkdownTableCell[];
-};
+}
 
-type MarkdownTable = {
+interface MarkdownTable {
   type: "table";
   align?: Align[];
   children: MarkdownTableRow[];
-};
+}
 
-export function AppMarkdownTable({
-  node,
-  renderChildren,
-  caption,
-  className,
-}: {
+interface AppMarkdownTableProps {
   node: MarkdownTable;
-  renderChildren: (n: any) => React.ReactNode | null;
-  caption?: React.ReactNode;
-  className?: string;
-}) {
-  const align = node.align || [];
-  const [headerRow, ...bodyRows] = node.children || [];
+  renderChildren: (n: any) => JSX.Element | null;
+  caption?: JSX.Element;
+  class?: string;
+}
+
+export function AppMarkdownTable(props: AppMarkdownTableProps) {
+  const headerRow = () => props.node.children[0];
+  const bodyRows = () => props.node.children.slice(1);
 
   const alignClass = (idx: number) => {
-    const a = align[idx];
+    const a = props.node.align?.[idx];
     if (a === "center") return "text-center";
     if (a === "right") return "text-right";
     return "text-left";
   };
 
   return (
-    <Table className={className ?? "my-4"}>
-      {caption ? <TableCaption>{caption}</TableCaption> : null}
+    <Table class={props.class ?? "my-4"}>
+      <Show when={props.caption}>
+        {(caption) => <TableCaption>{caption()}</TableCaption>}
+      </Show>
 
-      {headerRow ? (
-        <TableHeader>
-          <TableRow>
-            {headerRow.children.map((cell, i) => (
-              <TableHead key={i} className={alignClass(i)}>
-                {renderChildren(cell)}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-      ) : null}
+      <Show when={headerRow()}>
+        {(header) => (
+          <TableHeader>
+            <TableRow>
+              <For each={header().children}>
+                {(cell, index) => (
+                  <TableHead class={alignClass(index())}>
+                    {props.renderChildren(cell)}
+                  </TableHead>
+                )}
+              </For>
+            </TableRow>
+          </TableHeader>
+        )}
+      </Show>
 
       <TableBody>
-        {bodyRows.map((row, rIdx) => (
-          <TableRow key={rIdx}>
-            {row.children.map((cell, cIdx) => (
-              <TableCell key={cIdx} className={alignClass(cIdx)}>
-                {renderChildren(cell)}
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
+        <For each={bodyRows()}>
+          {(row) => (
+            <TableRow>
+              <For each={row.children}>
+                {(cell, index) => (
+                  <TableCell class={alignClass(index())}>
+                    {props.renderChildren(cell)}
+                  </TableCell>
+                )}
+              </For>
+            </TableRow>
+          )}
+        </For>
       </TableBody>
     </Table>
   );

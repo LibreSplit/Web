@@ -1,26 +1,43 @@
-import { Card, CardContent } from "../ui/card";
-import { CodeBlock } from "react-code-block";
+import Prism from "prismjs";
 
-export type AppMarkdownCodeBlockProps = {
+import "prism-themes/themes/prism-vsc-dark-plus.css";
+import { createMemo } from "solid-js";
+import "prismjs/components/prism-bash";
+import "prismjs/components/prism-c";
+import "prismjs/components/prism-cpp";
+import "prismjs/components/prism-json";
+import "prismjs/components/prism-lua";
+import "prismjs/components/prism-rust";
+import "prismjs/components/prism-toml";
+import "prismjs/components/prism-yaml";
+
+import { Card, CardContent } from "../ui/card";
+
+export interface AppMarkdownCodeBlockProps {
   code: string;
   language?: string;
-};
+}
 
-export function AppMarkdownCodeBlock({
-  code,
-  language,
-}: AppMarkdownCodeBlockProps) {
+export function AppMarkdownCodeBlock(props: AppMarkdownCodeBlockProps) {
+  const language = () => props.language ?? "text";
+  const highlightedCode = createMemo(() => {
+    const lang = language();
+    const grammar = Prism.languages[lang] ?? Prism.languages.plaintext;
+    return Prism.highlight(props.code, grammar, lang);
+  });
+
   return (
-    <div className="w-fit px-2">
-      <Card className="w-fit">
-        <CardContent className="w-fit">
-          <CodeBlock code={code} language={language ?? "text"}>
-            <CodeBlock.Code>
-              <CodeBlock.LineContent>
-                <CodeBlock.Token />
-              </CodeBlock.LineContent>
-            </CodeBlock.Code>
-          </CodeBlock>
+    <div class="w-fit px-2">
+      <Card class="w-fit">
+        <CardContent class="w-fit">
+          <pre>
+            {/* oxlint-disable solid/no-innerhtml -- Prism escapes source text before returning highlighted HTML. */}
+            <code
+              class={`language-${language()}`}
+              innerHTML={highlightedCode()}
+            />
+            {/* oxlint-enable solid/no-innerhtml */}
+          </pre>
         </CardContent>
       </Card>
     </div>

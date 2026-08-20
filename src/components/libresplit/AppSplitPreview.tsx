@@ -1,17 +1,17 @@
 interface AppSplitPreviewProps {
   text: string;
-  className?: string;
+  class?: string;
 }
 
-export function AppSplitPreview({ text, className }: AppSplitPreviewProps) {
+export function AppSplitPreview(props: AppSplitPreviewProps) {
   return (
     <textarea
       readOnly
-      value={text}
+      value={props.text}
       wrap="off"
-      spellCheck={false}
+      spellcheck={false}
       aria-readonly="true"
-      className={`h-full w-full resize-none ${className ?? ""}`}
+      class={`h-full w-full resize-none ${props.class ?? ""}`}
     />
   );
 }
