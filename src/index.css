@@ -120,6 +120,34 @@
   }
 }
 
+/* Markdown formatting */
+.prose {
+  & .markdown-badge {
+    @apply mx-2 my-0 inline-block rounded-lg align-middle;
+  }
+
+  & .markdown-badge-link {
+    @apply no-underline;
+  }
+
+  & .table {
+    @apply block overflow-x-auto;
+  }
+
+  & tbody tr {
+    @apply transition-colors hover:bg-muted/50;
+  }
+
+  & th {
+    @apply h-10 px-2 align-middle whitespace-nowrap;
+  }
+
+  & td {
+    @apply p-2 align-middle whitespace-nowrap;
+  }
+}
+/* End markdown formatting */
+
 /* PacmanLoader styles derived from react-spinners v0.17.0; see ATTRIBUTIONS.md. */
 .pacman-loader {
   display: inherit;

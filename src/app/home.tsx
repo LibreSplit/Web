@@ -5,7 +5,10 @@ export function Home() {
   return (
     <div class="flex flex-col items-center justify-center">
       <AppHero />
-      <AppGitHubGenericMarkdown url="https://raw.githubusercontent.com/LibreSplit/LibreSplit/refs/heads/main/README.md" />
+      <AppGitHubGenericMarkdown
+        url="https://raw.githubusercontent.com/LibreSplit/LibreSplit/refs/heads/main/README.md"
+        isHomePage={true}
+      />
     </div>
   );
 }

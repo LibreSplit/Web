@@ -18,6 +18,12 @@ import "prismjs/components/prism-toml";
 import "prismjs/components/prism-yaml";
 import { createMemo } from "solid-js";
 
+interface MarkdownProps {
+  content: string;
+  sourceUrl: string;
+  isHomePage: boolean;
+}
+
 const markdown = new Marked(
   { gfm: true, breaks: false },
   gfmHeadingId(),
@@ -72,7 +78,11 @@ function resolveImageSrcset(value: string, sourceUrl: string) {
     .join(", ");
 }
 
-function renderMarkdown(content: string, sourceUrl: string) {
+function renderMarkdown(
+  content: string,
+  sourceUrl: string,
+  isHomePage: boolean,
+) {
   const resolveImages: UponSanitizeAttributeHook = (element, attribute) => {
     if (element.tagName !== "IMG" && element.tagName !== "SOURCE") {
       return;
@@ -85,7 +95,7 @@ function renderMarkdown(content: string, sourceUrl: string) {
           ? resolveImageSrcset(attribute.attrValue, sourceUrl)
           : undefined;
 
-    if (!resolvedValue) {
+    if (resolvedValue === null || resolvedValue === undefined) {
       return;
     }
 
@@ -98,10 +108,26 @@ function renderMarkdown(content: string, sourceUrl: string) {
 
   const identifyBadges: UponSanitizeElementHook = (node, event) => {
     if (event.tagName !== "img" || !(node instanceof Element)) {
+      if (
+        isHomePage &&
+        event.tagName === "h1" &&
+        node instanceof Element &&
+        node.firstChild?.nodeValue === "LibreSplit"
+      ) {
+        // For the home page, remove the duplicate brand name header.
+        node.remove();
+      }
+
       return;
     }
 
+    // For the home page, remove the duplicate logo image.
     const src = node.getAttribute("src");
+    if (isHomePage && src && src.toLowerCase().endsWith("libresplit.svg")) {
+      node.remove();
+      return;
+    }
+
     const resolvedSrc = src && resolveImageSrc(src, sourceUrl);
     if (resolvedSrc && new URL(resolvedSrc).hostname === "img.shields.io") {
       node.classList.add("markdown-badge");
@@ -123,14 +149,15 @@ function renderMarkdown(content: string, sourceUrl: string) {
   }
 }
 
-export function Markdown(props: { content: string; sourceUrl: string }) {
+export function Markdown(props: MarkdownProps) {
   const content = createMemo(() =>
-    renderMarkdown(props.content, props.sourceUrl),
+    renderMarkdown(props.content, props.sourceUrl, props.isHomePage),
   );
 
+  // oxlint-disable solid/no-innerhtml -- content is sanitized before passing to innerHTML
   return (
     <article
-      class="prose prose-neutral dark:prose-invert max-w-none [&_.markdown-badge]:mx-2 [&_.markdown-badge]:my-0 [&_.markdown-badge]:inline-block [&_.markdown-badge]:rounded-lg [&_.markdown-badge]:align-middle [&_.markdown-badge-link]:no-underline [&_table]:block [&_table]:overflow-x-auto"
+      class="prose max-w-none prose-neutral dark:prose-invert"
       innerHTML={content()}
       on:error={{
         capture: true,
