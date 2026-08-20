@@ -1,11 +1,15 @@
 {
   "name": "libresplit-website",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "homepage": "https://libresplit.org",
   "type": "module",
   "scripts": {
-    "format": "prettier . --write",
+    "test": "npm run format:test && tsc -b && npm run lint",
+    "lint": "npx oxlint -c oxlint.config.ts src vite.config.ts",
+    "format:test": "oxfmt -c .oxfmtrc.json --check .",
+    "format:write": "oxfmt -c .oxfmtrc.json --write .",
+    "format:write:files": "oxfmt -c .oxfmtrc.json",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
