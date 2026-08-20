@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { NavigationMenu as KNavigationMenu } from "@kobalte/core/navigation-menu";
 import { cva } from "class-variance-authority";
 import { ChevronDownIcon } from "lucide-solid";
@@ -12,7 +11,11 @@ import {
   splitProps,
 } from "solid-js";
 
-type ClassProps = { class?: string };
+import { cn } from "@/lib/utils";
+
+interface ClassProps {
+  class?: string;
+}
 
 type NavigationMenuProps = ComponentProps<typeof KNavigationMenu> &
   ClassProps & { viewport?: boolean };
@@ -74,7 +77,7 @@ function NavigationMenuItem(props: NavigationMenuItemProps) {
 }
 
 const navigationMenuTriggerStyle = cva(
-  "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[expanded]:hover:bg-accent data-[expanded]:text-accent-foreground data-[expanded]:focus:bg-accent data-[expanded]:bg-accent/50 focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1",
+  "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-[color,box-shadow] outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[expanded]:bg-accent/50 data-[expanded]:text-accent-foreground data-[expanded]:hover:bg-accent data-[expanded]:focus:bg-accent",
 );
 
 type NavigationMenuTriggerProps = ComponentProps<

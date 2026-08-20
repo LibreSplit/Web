@@ -1,5 +1,6 @@
-import { AppNav } from "./components/libresplit/AppNav";
 import type { ParentProps } from "solid-js";
+
+import { AppNav } from "./components/libresplit/AppNav";
 
 export default function App(props: ParentProps) {
   return (

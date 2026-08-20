@@ -1,5 +1,6 @@
-import { cn } from "@/lib/utils";
 import { type ComponentProps, splitProps } from "solid-js";
+
+import { cn } from "@/lib/utils";
 
 type TableProps = ComponentProps<"table">;
 type TableHeaderProps = ComponentProps<"thead">;

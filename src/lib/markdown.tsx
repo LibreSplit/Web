@@ -5,6 +5,7 @@ import DOMPurify, {
 import { Marked } from "marked";
 import { gfmHeadingId } from "marked-gfm-heading-id";
 import { markedHighlight } from "marked-highlight";
+
 import "prism-themes/themes/prism-vsc-dark-plus.css";
 import Prism from "prismjs";
 import "prismjs/components/prism-bash";
@@ -129,7 +130,7 @@ export function Markdown(props: { content: string; sourceUrl: string }) {
 
   return (
     <article
-      class="prose max-w-none prose-neutral dark:prose-invert [&_.markdown-badge]:mx-2 [&_.markdown-badge]:my-0 [&_.markdown-badge]:inline-block [&_.markdown-badge]:rounded-lg [&_.markdown-badge]:align-middle [&_.markdown-badge-link]:no-underline [&_table]:block [&_table]:overflow-x-auto"
+      class="prose prose-neutral dark:prose-invert max-w-none [&_.markdown-badge]:mx-2 [&_.markdown-badge]:my-0 [&_.markdown-badge]:inline-block [&_.markdown-badge]:rounded-lg [&_.markdown-badge]:align-middle [&_.markdown-badge-link]:no-underline [&_table]:block [&_table]:overflow-x-auto"
       innerHTML={content()}
       on:error={{
         capture: true,

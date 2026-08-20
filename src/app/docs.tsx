@@ -1,10 +1,11 @@
+import { For } from "solid-js";
+
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { For } from "solid-js";
 
 const docs = [
   {

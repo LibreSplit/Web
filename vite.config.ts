@@ -1,6 +1,7 @@
-import tailwindcss from "@tailwindcss/vite";
 import fs from "fs";
 import path from "path";
+
+import tailwindcss from "@tailwindcss/vite";
 import { type Plugin, defineConfig } from "vite";
 import sitemap from "vite-plugin-sitemap";
 import solid from "vite-plugin-solid";

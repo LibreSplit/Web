@@ -1,3 +1,5 @@
+import { Moon, Sun } from "lucide-solid";
+
 import { useTheme } from "../../lib/theme";
 import { Button } from "../ui/button";
 import {
@@ -6,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Moon, Sun } from "lucide-solid";
 
 export function AppThemeToggleButton() {
   const { setTheme } = useTheme();

@@ -1,8 +1,9 @@
-import AppFileSelect from "@/components/libresplit/AppFileSelect";
-import { AppSplitPreview } from "@/components/libresplit/AppSplitPreview";
 import init, { convert } from "@libresplit/converter";
 import wasmUrl from "@libresplit/converter/converter_bg.wasm?url";
 import { Show, createSignal } from "solid-js";
+
+import AppFileSelect from "@/components/libresplit/AppFileSelect";
+import { AppSplitPreview } from "@/components/libresplit/AppSplitPreview";
 
 export function Converter() {
   const [selectedFile, setSelectedFile] = createSignal<File | null>(null);
