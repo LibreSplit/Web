@@ -157,7 +157,7 @@ export function Markdown(props: MarkdownProps) {
   // oxlint-disable solid/no-innerhtml -- content is sanitized before passing to innerHTML
   return (
     <article
-      class="prose max-w-none prose-neutral dark:prose-invert"
+      class="markdown prose max-w-none prose-neutral dark:prose-invert"
       innerHTML={content()}
       on:error={{
         capture: true,

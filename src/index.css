@@ -121,7 +121,7 @@
 }
 
 /* Markdown formatting */
-.prose {
+.markdown.prose {
   & .markdown-badge {
     @apply mx-2 my-0 inline-block rounded-lg align-middle;
   }
@@ -132,6 +132,14 @@
 
   & .table {
     @apply block overflow-x-auto;
+  }
+
+  & ul > li::marker {
+    color: inherit;
+  }
+
+  & p[align="center"] > img {
+    @apply my-0 inline-block;
   }
 
   & tbody tr {
