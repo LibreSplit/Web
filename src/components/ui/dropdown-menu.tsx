@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { DropdownMenu as KDropdownMenu } from "@kobalte/core/dropdown-menu";
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-solid";
 import {
@@ -7,6 +6,8 @@ import {
   mergeProps,
   splitProps,
 } from "solid-js";
+
+import { cn } from "@/lib/utils";
 
 interface ClassProps {
   class?: string;
@@ -25,7 +26,12 @@ function DropdownMenuPortal(
 type DropdownMenuTriggerProps = ComponentProps<typeof KDropdownMenu.Trigger> & {
   as?: ValidComponent;
   variant?:
-    "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
   size?: "default" | "sm" | "lg" | "icon" | "icon-sm" | "icon-lg";
 };
 

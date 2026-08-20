@@ -1,10 +1,12 @@
-import App from "./app";
-import "./index.css";
-import { ThemeProvider } from "./lib/theme";
-import AppRouter from "./router";
 import { Router } from "@solidjs/router";
+
+import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { render } from "solid-js/web";
+
+import App from "./app";
+import { ThemeProvider } from "./lib/theme";
+import AppRouter from "./router";
 
 const queryClient = new QueryClient();
 

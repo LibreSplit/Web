@@ -1,3 +1,5 @@
+import { Route } from "@solidjs/router";
+
 import { Converter } from "./app/converter";
 import { Docs } from "./app/docs";
 import { AutoSplitters } from "./app/docs/auto-splitters";
@@ -7,7 +9,6 @@ import { Themes } from "./app/docs/themes";
 import { Troubleshooting } from "./app/docs/troubleshooting";
 import { Home } from "./app/home";
 import { NotFound } from "./app/not-found";
-import { Route } from "@solidjs/router";
 
 export default function AppRouter() {
   return (

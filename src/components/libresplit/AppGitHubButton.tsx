@@ -1,6 +1,7 @@
-import { GithubButton } from "../ui/github-button";
 import { Skeleton } from "@kobalte/core/skeleton";
 import { Show, createResource } from "solid-js";
+
+import { GithubButton } from "../ui/github-button";
 
 // Fetch repo data from GitHub API.
 const fetchStars = async () => {

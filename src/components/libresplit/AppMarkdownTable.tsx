@@ -1,3 +1,5 @@
+import { For, type JSX, Show } from "solid-js";
+
 import {
   Table,
   TableBody,
@@ -7,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { For, type JSX, Show } from "solid-js";
 
 type Align = "left" | "center" | "right" | null;
 

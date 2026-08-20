@@ -1,7 +1,8 @@
-import { Markdown } from "@/lib/markdown";
 import { Skeleton } from "@kobalte/core/skeleton";
 import { useQuery } from "@tanstack/solid-query";
 import { Match, Switch } from "solid-js";
+
+import { Markdown } from "@/lib/markdown";
 
 async function fetchMarkdown(url: string): Promise<string> {
   const res = await fetch(url);

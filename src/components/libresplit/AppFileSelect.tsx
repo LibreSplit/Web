@@ -1,7 +1,8 @@
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { FileField } from "@kobalte/core/file-field";
 import { mergeProps } from "solid-js";
+
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 interface AppFileSelectProps {
   label?: string;

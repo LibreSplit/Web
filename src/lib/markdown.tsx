@@ -1,10 +1,11 @@
-import { AppMarkdownCodeBlock } from "@/components/libresplit/AppMarkdownCodeBlock";
-import { AppMarkdownTable } from "@/components/libresplit/AppMarkdownTable";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { gfmFromMarkdown } from "mdast-util-gfm";
 import { gfm } from "micromark-extension-gfm";
 import { For, type JSX, createMemo } from "solid-js";
 import { Dynamic } from "solid-js/web";
+
+import { AppMarkdownCodeBlock } from "@/components/libresplit/AppMarkdownCodeBlock";
+import { AppMarkdownTable } from "@/components/libresplit/AppMarkdownTable";
 
 export function Markdown(props: { content: string }) {
   const tree = createMemo(() =>
