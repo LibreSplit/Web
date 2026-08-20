@@ -1,16 +1,27 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+	"source.format.oxc": "always",
+	"source.fixAll.oxc": "always"
+  },
   "editor.quickSuggestions": {
     "strings": "on"
   },
   "files.associations": {
 	"*.css": "tailwindcss"
   },
-  "prettier.requireConfig": true,
   "tailwindCSS.classAttributes": ["class"],
   "tailwindCSS.experimental.configFile": "src/index.css",
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "js/ts.tsdk.path": "node_modules/typescript/lib",
-  "js/ts.tsdk.promptToUseWorkspaceVersion": true
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+  "oxc.fixKind": "safe_fix",
+  "oxc.lint.customization": {
+	"no-unused-vars": {
+		"autofix": false
+	}
+  },
+  "oxc.lint.run": "onSave",
+  "oxc.requireConfig": true
 }
