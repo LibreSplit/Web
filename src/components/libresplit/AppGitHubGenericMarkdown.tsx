@@ -13,9 +13,9 @@ async function fetchMarkdown(url: string): Promise<string> {
   return res.text();
 }
 
-type AppGitHubGenericMarkdownProps = {
+interface AppGitHubGenericMarkdownProps {
   url: string;
-};
+}
 
 export function AppGitHubGenericMarkdown(props: AppGitHubGenericMarkdownProps) {
   const query = useQuery(() => ({

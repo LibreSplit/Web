@@ -7,6 +7,7 @@
   "scripts": {
     "test": "npm run format:test && tsc -b && npm run lint",
     "lint": "npx oxlint -c oxlint.config.ts src vite.config.ts",
+    "lint:fix": "npm run lint -- --fix",
     "format:test": "oxfmt -c .oxfmtrc.json --check .",
     "format:write": "oxfmt -c .oxfmtrc.json --write .",
     "format:write:files": "oxfmt -c .oxfmtrc.json",

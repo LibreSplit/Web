@@ -4,6 +4,7 @@ import {
   createSignal,
   onCleanup,
   splitProps,
+  untrack,
 } from "solid-js";
 
 interface TextScrambleProps extends Omit<ComponentProps<"span">, "children"> {
@@ -25,7 +26,8 @@ export const TextScramble = (props: TextScrambleProps) => {
     "speed",
     "characterSet",
   ]);
-  const [text, setText] = createSignal(local.children);
+
+  const [text, setText] = createSignal(untrack(() => local.children));
 
   createEffect(() => {
     const children = local.children;

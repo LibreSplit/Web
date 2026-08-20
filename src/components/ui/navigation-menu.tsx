@@ -12,7 +12,7 @@ import {
   splitProps,
 } from "solid-js";
 
-type ClassProps = { class?: string };
+interface ClassProps { class?: string }
 
 type NavigationMenuProps = ComponentProps<typeof KNavigationMenu> &
   ClassProps & { viewport?: boolean };

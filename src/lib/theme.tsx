@@ -10,13 +10,14 @@ import {
 
 type Theme = "light" | "dark" | "system";
 
-type ThemeContextValue = {
+interface ThemeContextValue {
   setTheme: (theme: Theme) => void;
-};
+}
 
 const ThemeContext = createContext<ThemeContextValue>();
 
 export function ThemeProvider(props: ParentProps) {
+  // oxlint-disable-next-line solid/reactivity -- This is documented makePersisted usage
   const [theme, setTheme] = makePersisted(createSignal<Theme>("system"), {
     name: "theme",
     serialize: (value: Theme) => value,
@@ -41,7 +42,7 @@ export function ThemeProvider(props: ParentProps) {
     document.documentElement.classList.toggle("dark", resolved === "dark");
     document.documentElement.style.colorScheme = resolved;
 
-    window.getComputedStyle(style).opacity;
+    void window.getComputedStyle(style).opacity;
     const frame = requestAnimationFrame(() => style.remove());
 
     onCleanup(() => {

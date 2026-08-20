@@ -8,9 +8,9 @@ import {
   splitProps,
 } from "solid-js";
 
-type ClassProps = {
+interface ClassProps {
   class?: string;
-};
+}
 
 function DropdownMenu(props: ComponentProps<typeof KDropdownMenu>) {
   return <KDropdownMenu {...props} />;

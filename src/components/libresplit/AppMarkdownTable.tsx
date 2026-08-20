@@ -11,28 +11,28 @@ import { For, type JSX, Show } from "solid-js";
 
 type Align = "left" | "center" | "right" | null;
 
-type MarkdownTableCell = {
+interface MarkdownTableCell {
   type: "tableCell";
   children?: any[];
-};
+}
 
-type MarkdownTableRow = {
+interface MarkdownTableRow {
   type: "tableRow";
   children: MarkdownTableCell[];
-};
+}
 
-type MarkdownTable = {
+interface MarkdownTable {
   type: "table";
   align?: Align[];
   children: MarkdownTableRow[];
-};
+}
 
-type AppMarkdownTableProps = {
+interface AppMarkdownTableProps {
   node: MarkdownTable;
   renderChildren: (n: any) => JSX.Element | null;
   caption?: JSX.Element;
   class?: string;
-};
+}
 
 export function AppMarkdownTable(props: AppMarkdownTableProps) {
   const headerRow = () => props.node.children[0];
