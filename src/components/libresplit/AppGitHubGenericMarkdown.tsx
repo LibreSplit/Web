@@ -39,7 +39,7 @@ export function AppGitHubGenericMarkdown(
       </Match>
       <Match when={query.data}>
         {(data) => (
-          <div>
+          <div class="w-full min-w-0">
             <Markdown
               content={data()}
               sourceUrl={props.url}

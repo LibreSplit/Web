@@ -30,7 +30,7 @@ export default function AppFileSelect(receivedProps: AppFileSelectProps) {
 
   return (
     <FileField
-      class="space-y-2 px-8"
+      class="space-y-2"
       multiple={false}
       accept={accept()}
       onFileChange={({ acceptedFiles }) => handleChange(acceptedFiles)}

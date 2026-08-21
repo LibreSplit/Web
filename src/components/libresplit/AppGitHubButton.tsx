@@ -27,13 +27,15 @@ export function AppGitHubButton() {
     <Show
       when={!stars.loading}
       fallback={
-        <Skeleton class="min-h-8 min-w-32 animate-pulse rounded-md bg-accent" />
+        <Skeleton class="min-h-12 min-w-20 animate-pulse rounded-md bg-accent md:min-h-8 md:min-w-32" />
       }
     >
       <GithubButton
         repoUrl="https://github.com/LibreSplit/LibreSplit"
         label="GitHub"
+        labelClass="hidden md:inline"
         stars={stars}
+        class="h-12 gap-1.5 px-2.5 md:h-8.5 md:gap-2 md:px-3"
       />
     </Show>
   );
