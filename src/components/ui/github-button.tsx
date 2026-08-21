@@ -14,10 +14,10 @@ import {
   untrack,
 } from "solid-js";
 
-import { cn } from "@/lib/utils";
+import { cn, prefersReducedMotion } from "@/lib/utils";
 
 const githubButtonVariants = cva(
-  "backface-visibility-hidden group relative inline-flex transform-gpu cursor-pointer items-center justify-center overflow-hidden font-medium whitespace-nowrap ring-offset-background transition-transform duration-200 ease-out will-change-transform hover:scale-105 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-60 [&_svg]:shrink-0",
+  "backface-visibility-hidden group relative inline-flex transform-gpu cursor-pointer items-center justify-center overflow-hidden font-medium whitespace-nowrap ring-offset-background transition-transform duration-200 ease-out will-change-transform hover:scale-105 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-60 motion-reduce:transform-none motion-reduce:transition-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -76,6 +76,8 @@ interface GithubButtonProps
   repoUrl: string;
   /** Button text label */
   label?: string;
+  /** Class for the visible button label */
+  labelClass?: string;
   /** Use in-view detection to trigger animation */
   useInViewTrigger?: boolean;
   /** In-view options */
@@ -104,6 +106,7 @@ function GithubButton(receivedProps: GithubButtonProps) {
       separator: false,
       filled: false,
       label: "",
+      labelClass: "",
       useInViewTrigger: false,
       inViewOptions: { once: true } as UseInViewOptions,
       target: "_blank",
@@ -128,6 +131,7 @@ function GithubButton(receivedProps: GithubButtonProps) {
     "filled",
     "repoUrl",
     "label",
+    "labelClass",
     "useInViewTrigger",
     "inViewOptions",
     "ref",
@@ -190,6 +194,13 @@ function GithubButton(receivedProps: GithubButtonProps) {
   // Start animation
   const startAnimation = () => {
     if (isAnimating() || hasAnimated()) return;
+
+    if (prefersReducedMotion()) {
+      setCurrentStars(targetStars());
+      setStarProgress(100);
+      setHasAnimated(true);
+      return;
+    }
 
     setIsAnimating(true);
     const startTime = Date.now();
@@ -299,7 +310,9 @@ function GithubButton(receivedProps: GithubButtonProps) {
         </div>
       </Show>
 
-      <Show when={local.label}>{(label) => <span>{label()}</span>}</Show>
+      <Show when={local.label}>
+        {(label) => <span class={local.labelClass}>{label()}</span>}
+      </Show>
 
       {/* Animated Star Icon */}
       <Show when={!hasResourceError() && local.showStarIcon}>

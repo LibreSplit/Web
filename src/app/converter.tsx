@@ -4,6 +4,7 @@ import { Show, createSignal } from "solid-js";
 
 import AppFileSelect from "@/components/libresplit/AppFileSelect";
 import { AppSplitPreview } from "@/components/libresplit/AppSplitPreview";
+import { Button } from "@/components/ui/button";
 
 export function Converter() {
   const [selectedFile, setSelectedFile] = createSignal<File | null>(null);
@@ -56,8 +57,8 @@ export function Converter() {
   };
 
   return (
-    <div class="flex h-[calc(100vh-64px-24px)] flex-col space-y-4 overflow-hidden">
-      <div class="shrink-0 px-25">
+    <div class="flex w-full flex-col gap-4 md:min-h-0 md:flex-1 md:overflow-hidden">
+      <div class="shrink-0">
         <AppFileSelect
           label="Select LiveSplit file:"
           value={selectedFile()}
@@ -66,41 +67,44 @@ export function Converter() {
         />
       </div>
 
-      <div class="flex shrink-0 items-center justify-center gap-2">
-        <button
+      <div class="flex shrink-0 flex-wrap items-center justify-center gap-2">
+        <Button
+          type="button"
           onClick={handleSubmit}
-          class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          class="bg-blue-600 text-white hover:bg-blue-700"
         >
           Convert
-        </button>
-        <button
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
           onClick={handleDownload}
           disabled={!result()}
-          class="rounded bg-gray-200 px-4 py-2 text-black disabled:opacity-50"
         >
           Download Splits
-        </button>
+        </Button>
       </div>
 
-      <div class="min-h-0 flex-1">
-        <div class="flex h-full min-h-0 w-full items-stretch justify-center gap-4">
-          <Show when={fileText()}>
-            {(text) => (
-              <div class="flex min-h-0 flex-1 flex-col">
-                <span class="mb-2 text-center font-semibold">LiveSplit:</span>
-                <AppSplitPreview text={text()} class="h-full flex-1" />
-              </div>
-            )}
-          </Show>
-          <Show when={result()}>
-            {(converted) => (
-              <div class="flex min-h-0 flex-1 flex-col">
-                <span class="mb-2 text-center font-semibold">LibreSplit:</span>
-                <AppSplitPreview text={converted()} class="h-full flex-1" />
-              </div>
-            )}
-          </Show>
-        </div>
+      <div class="grid gap-4 md:min-h-0 md:flex-1 md:grid-cols-2">
+        <Show when={fileText()}>
+          {(text) => (
+            <section
+              class="flex h-80 min-w-0 flex-col md:h-auto md:min-h-0"
+              classList={{ "md:col-span-2": !result() }}
+            >
+              <h2 class="mb-2 text-center font-semibold">LiveSplit:</h2>
+              <AppSplitPreview text={text()} />
+            </section>
+          )}
+        </Show>
+        <Show when={result()}>
+          {(converted) => (
+            <section class="flex h-80 min-w-0 flex-col md:h-auto md:min-h-0">
+              <h2 class="mb-2 text-center font-semibold">LibreSplit:</h2>
+              <AppSplitPreview text={converted()} />
+            </section>
+          )}
+        </Show>
       </div>
     </div>
   );

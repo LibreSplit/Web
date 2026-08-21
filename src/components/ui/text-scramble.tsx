@@ -7,6 +7,8 @@ import {
   untrack,
 } from "solid-js";
 
+import { prefersReducedMotion } from "@/lib/utils";
+
 interface TextScrambleProps extends Omit<ComponentProps<"span">, "children"> {
   children: string;
   speed?: number;
@@ -33,6 +35,12 @@ export const TextScramble = (props: TextScrambleProps) => {
     const children = local.children;
     const speed = local.speed ?? 50;
     const characterSet = local.characterSet ?? DEFAULT_CHARS;
+
+    if (prefersReducedMotion()) {
+      setText(children);
+      return;
+    }
+
     let step = 0;
     const interval = setInterval(() => {
       let scrambled = "";

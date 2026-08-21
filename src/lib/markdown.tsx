@@ -135,6 +135,8 @@ function renderMarkdown(
       if (node.parentElement?.tagName === "A") {
         node.parentElement.classList.add("markdown-badge-link");
       }
+    } else if (node.closest('p[align="center"]')) {
+      node.classList.add("max-md:w-full");
     }
   };
 
@@ -157,7 +159,7 @@ export function Markdown(props: MarkdownProps) {
   // oxlint-disable solid/no-innerhtml -- content is sanitized before passing to innerHTML
   return (
     <article
-      class="markdown prose max-w-none prose-neutral dark:prose-invert"
+      class="markdown prose w-full max-w-none min-w-0 prose-neutral dark:prose-invert"
       innerHTML={content()}
       on:error={{
         capture: true,

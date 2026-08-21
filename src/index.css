@@ -122,20 +122,52 @@
 
 /* Markdown formatting */
 .markdown.prose {
+  & :where(p, li, h1, h2, h3, h4, h5, h6, a) {
+    overflow-wrap: anywhere;
+  }
+
+  & img:not(.markdown-badge) {
+    @apply h-auto max-w-full;
+  }
+
   & .markdown-badge {
-    @apply mx-2 my-0 inline-block rounded-lg align-middle;
+    @apply m-0 inline-block max-w-full rounded-lg align-middle;
   }
 
   & .markdown-badge-link {
     @apply no-underline;
   }
 
-  & .table {
-    @apply block overflow-x-auto;
+  & p:has(.markdown-badge) {
+    @apply flex flex-wrap items-center justify-center gap-2;
+  }
+
+  & :where(table, .table) {
+    @apply block max-w-full overflow-x-auto;
+  }
+
+  & pre {
+    @apply max-w-full overflow-x-auto;
   }
 
   & ul > li::marker {
     color: inherit;
+  }
+
+  & ul:not([type]) {
+    list-style-type: revert;
+  }
+
+  & :where(ul, ol) ol:not([type]) {
+    list-style-type: lower-roman;
+  }
+
+  & :where(ul, ol) :where(ul, ol) ol:not([type]) {
+    list-style-type: lower-alpha;
+  }
+
+  & p[align="center"]:has(> img:not(.markdown-badge)) {
+    @apply flex flex-wrap items-center justify-center gap-2;
   }
 
   & p[align="center"] > img {
