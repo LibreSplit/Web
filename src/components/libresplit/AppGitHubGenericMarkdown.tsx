@@ -1,6 +1,6 @@
 import { Skeleton } from "@kobalte/core/skeleton";
 import { useQuery } from "@tanstack/solid-query";
-import { Match, Switch } from "solid-js";
+import { Match, mergeProps, Switch } from "solid-js";
 
 import { Markdown } from "@/lib/markdown";
 
@@ -16,9 +16,13 @@ async function fetchMarkdown(url: string): Promise<string> {
 
 interface AppGitHubGenericMarkdownProps {
   url: string;
+  isHomePage?: boolean;
 }
 
-export function AppGitHubGenericMarkdown(props: AppGitHubGenericMarkdownProps) {
+export function AppGitHubGenericMarkdown(
+  receivedProps: AppGitHubGenericMarkdownProps,
+) {
+  const props = mergeProps({ isHomePage: false }, receivedProps);
   const query = useQuery(() => ({
     queryKey: [props.url],
     queryFn: () => fetchMarkdown(props.url),
@@ -36,7 +40,11 @@ export function AppGitHubGenericMarkdown(props: AppGitHubGenericMarkdownProps) {
       <Match when={query.data}>
         {(data) => (
           <div>
-            <Markdown content={data()} />
+            <Markdown
+              content={data()}
+              sourceUrl={props.url}
+              isHomePage={props.isHomePage}
+            />
           </div>
         )}
       </Match>

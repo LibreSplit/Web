@@ -1,142 +1,173 @@
-import { fromMarkdown } from "mdast-util-from-markdown";
-import { gfmFromMarkdown } from "mdast-util-gfm";
-import { gfm } from "micromark-extension-gfm";
-import { For, type JSX, createMemo } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import DOMPurify, {
+  type UponSanitizeAttributeHook,
+  type UponSanitizeElementHook,
+} from "dompurify";
+import { Marked } from "marked";
+import { gfmHeadingId } from "marked-gfm-heading-id";
+import { markedHighlight } from "marked-highlight";
 
-import { AppMarkdownCodeBlock } from "@/components/libresplit/AppMarkdownCodeBlock";
-import { AppMarkdownTable } from "@/components/libresplit/AppMarkdownTable";
+import "prism-themes/themes/prism-vsc-dark-plus.css";
+import Prism from "prismjs";
+import "prismjs/components/prism-bash";
+import "prismjs/components/prism-c";
+import "prismjs/components/prism-cpp";
+import "prismjs/components/prism-json";
+import "prismjs/components/prism-lua";
+import "prismjs/components/prism-rust";
+import "prismjs/components/prism-toml";
+import "prismjs/components/prism-yaml";
+import { createMemo } from "solid-js";
 
-export function Markdown(props: { content: string }) {
-  const tree = createMemo(() =>
-    fromMarkdown(props.content, {
-      extensions: [gfm()],
-      mdastExtensions: [gfmFromMarkdown()],
-    }),
+interface MarkdownProps {
+  content: string;
+  sourceUrl: string;
+  isHomePage: boolean;
+}
+
+const markdown = new Marked(
+  { gfm: true, breaks: false },
+  gfmHeadingId(),
+  markedHighlight({
+    highlight(code, language) {
+      const lang = Prism.languages.hasOwnProperty(language)
+        ? language
+        : "plaintext";
+
+      const grammar = Prism.languages[lang];
+      return Prism.highlight(code, grammar, lang);
+    },
+  }),
+);
+
+function resolveImageSrc(value: string, sourceUrl: string) {
+  try {
+    const url = new URL(value, sourceUrl);
+    const [owner, repository, blob, reference, ...path] = url.pathname
+      .split("/")
+      .filter(Boolean);
+
+    if (
+      url.hostname === "github.com" &&
+      owner &&
+      repository &&
+      blob === "blob" &&
+      reference &&
+      path.length
+    ) {
+      return new URL(
+        `https://raw.githubusercontent.com/${owner}/${repository}/${reference}/${path.join("/")}`,
+      ).href;
+    }
+
+    return ["http:", "https:"].includes(url.protocol) ? url.href : null;
+  } catch {}
+
+  return null;
+}
+
+function resolveImageSrcset(value: string, sourceUrl: string) {
+  return value
+    .split(",")
+    .map((candidate) => {
+      const [url, ...descriptor] = candidate.trim().split(/\s+/);
+      const resolvedUrl = resolveImageSrc(url, sourceUrl);
+
+      return resolvedUrl ? [resolvedUrl, ...descriptor].join(" ") : null;
+    })
+    .filter((candidate) => !!candidate)
+    .join(", ");
+}
+
+function renderMarkdown(
+  content: string,
+  sourceUrl: string,
+  isHomePage: boolean,
+) {
+  const resolveImages: UponSanitizeAttributeHook = (element, attribute) => {
+    if (element.tagName !== "IMG" && element.tagName !== "SOURCE") {
+      return;
+    }
+
+    const resolvedValue =
+      attribute.attrName === "src"
+        ? resolveImageSrc(attribute.attrValue, sourceUrl)
+        : attribute.attrName === "srcset"
+          ? resolveImageSrcset(attribute.attrValue, sourceUrl)
+          : undefined;
+
+    if (resolvedValue === null || resolvedValue === undefined) {
+      return;
+    }
+
+    if (resolvedValue) {
+      attribute.attrValue = resolvedValue;
+    } else {
+      attribute.keepAttr = false;
+    }
+  };
+
+  const identifyBadges: UponSanitizeElementHook = (node, event) => {
+    if (event.tagName !== "img" || !(node instanceof Element)) {
+      if (
+        isHomePage &&
+        event.tagName === "h1" &&
+        node instanceof Element &&
+        node.firstChild?.nodeValue === "LibreSplit"
+      ) {
+        // For the home page, remove the duplicate brand name header.
+        node.remove();
+      }
+
+      return;
+    }
+
+    // For the home page, remove the duplicate logo image.
+    const src = node.getAttribute("src");
+    if (isHomePage && src && src.toLowerCase().endsWith("libresplit.svg")) {
+      node.remove();
+      return;
+    }
+
+    const resolvedSrc = src && resolveImageSrc(src, sourceUrl);
+    if (resolvedSrc && new URL(resolvedSrc).hostname === "img.shields.io") {
+      node.classList.add("markdown-badge");
+
+      if (node.parentElement?.tagName === "A") {
+        node.parentElement.classList.add("markdown-badge-link");
+      }
+    }
+  };
+
+  DOMPurify.addHook("uponSanitizeAttribute", resolveImages);
+  DOMPurify.addHook("uponSanitizeElement", identifyBadges);
+
+  try {
+    return DOMPurify.sanitize(markdown.parse(content, { async: false }));
+  } finally {
+    DOMPurify.removeHook("uponSanitizeAttribute", resolveImages);
+    DOMPurify.removeHook("uponSanitizeElement", identifyBadges);
+  }
+}
+
+export function Markdown(props: MarkdownProps) {
+  const content = createMemo(() =>
+    renderMarkdown(props.content, props.sourceUrl, props.isHomePage),
   );
 
-  function renderChildren(node: any): JSX.Element | null {
-    if (!node.children) {
-      return null;
-    }
-    return <For each={node.children}>{renderNode}</For>;
-  }
-
-  function renderNode(node: any): JSX.Element {
-    switch (node.type) {
-      case "text":
-        return node.value;
-
-      // Handles paragraph text.
-      case "paragraph":
-        return <p>{renderChildren(node)}</p>;
-
-      // Handles bold or italic text.
-      case "strong":
-        return <p class="font-bold">{renderChildren(node)}</p>;
-      case "emphasis":
-        return <p class="italic">{renderChildren(node)}</p>;
-
-      // Handles headings #, ## and ###.
-      case "heading":
-        switch (node.depth) {
-          case 1:
-            return (
-              <div class="flex w-screen items-center justify-center">
-                <h1 class="text-3xl font-extrabold">{renderChildren(node)}</h1>
-              </div>
-            );
-          case 2:
-            return <h2 class="text-2xl font-bold">{renderChildren(node)}</h2>;
-          case 3:
-            return (
-              <h3 class="text-xl font-semibold">{renderChildren(node)}</h3>
-            );
-          default:
-            return <div class="text-gray-700">{renderChildren(node)}</div>;
-        }
-
-      // Handle block quotes.
-      case "blockquote":
-        return (
-          <blockquote class="border-l-4 border-gray-300 pl-4 text-gray-700 italic">
-            {renderChildren(node)}
-          </blockquote>
-        );
-
-      // Handles links in markdown [text](url).
-      case "link":
-        return (
-          <a class="text-blue-300" href={node.url}>
-            {renderChildren(node)}
-          </a>
-        );
-
-      // Handles lists.
-      case "list": {
-        // Select between ol and ul. Apply tailwind styling.
-        const listTag = node.ordered ? "ol" : "ul";
-        const cls = node.ordered ? "list-decimal ml-6" : "list-disc ml-6";
-        // Start only applys to ol(s).
-        const startProps =
-          node.ordered && node.start ? { start: node.start } : {};
-        return (
-          <Dynamic component={listTag} class={cls} {...startProps}>
-            {renderChildren(node)}
-          </Dynamic>
-        );
-      }
-      case "listItem": {
-        return <li>{renderChildren(node)}</li>;
-      }
-
-      // Handles tables.
-      case "table":
-        return <AppMarkdownTable node={node} renderChildren={renderChildren} />;
-
-      // Handles code blocks.
-      case "code":
-        return <AppMarkdownCodeBlock code={node.value} language={node.lang} />;
-      case "inlineCode":
-        return <p>{node.value}</p>;
-
-      // Handle html tags to catch images.
-      case "html": {
-        const imgs = [
-          ...node.value.matchAll(
-            /<img\s+[^>]*src=["']([^"']+)["'][^>]*?(?:alt=["']([^"']*)["'])?[^>]*>/gi,
-          ),
-        ];
-        if (imgs.length) {
-          return (
-            <div class="my-4 flex flex-wrap justify-center gap-4">
-              <For each={imgs}>
-                {(match) => (
-                  <img
-                    src={match[1]}
-                    alt={match[2] ?? ""}
-                    class="h-auto max-w-full rounded-lg"
-                  />
-                )}
-              </For>
-            </div>
-          );
-        }
-        return null;
-      }
-
-      // Handle thematic breaks.
-      case "thematicBreak":
-        return <hr class="my-4 border-gray-300" />;
-
-      default:
-        return renderChildren(node);
-    }
-  }
-
+  // oxlint-disable solid/no-innerhtml -- content is sanitized before passing to innerHTML
   return (
-    <div class="space-y-6">
-      <For each={tree().children}>{renderNode}</For>
-    </div>
+    <article
+      class="markdown prose max-w-none prose-neutral dark:prose-invert"
+      innerHTML={content()}
+      on:error={{
+        capture: true,
+        handleEvent: (event) => {
+          if (event.target instanceof HTMLImageElement) {
+            event.target.alt = "";
+            event.target.hidden = true;
+          }
+        },
+      }}
+    />
   );
 }
