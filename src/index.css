@@ -154,6 +154,18 @@
     color: inherit;
   }
 
+  & ul:not([type]) {
+    list-style-type: revert;
+  }
+
+  & :where(ul, ol) ol:not([type]) {
+    list-style-type: lower-roman;
+  }
+
+  & :where(ul, ol) :where(ul, ol) ol:not([type]) {
+    list-style-type: lower-alpha;
+  }
+
   & p[align="center"]:has(> img:not(.markdown-badge)) {
     @apply flex flex-wrap items-center justify-center gap-2;
   }
