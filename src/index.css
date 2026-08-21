@@ -173,6 +173,15 @@
   & td {
     @apply p-2 align-middle whitespace-nowrap;
   }
+
+  & :where(code):not(:where(pre code)) {
+    @apply rounded-md bg-muted px-[0.4em] py-[0.2em] font-mono text-[0.875em] font-normal;
+  }
+
+  & :where(code):not(:where(pre code))::before,
+  & :where(code):not(:where(pre code))::after {
+    content: none;
+  }
 }
 
 /* End markdown formatting */
