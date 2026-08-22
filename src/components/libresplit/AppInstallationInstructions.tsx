@@ -27,7 +27,12 @@ interface Distro {
 }
 
 const SUPPORTED_DISTROS = [
-  { type: DistroType.FEDORA, label: "Fedora", logo: fedoraLogo, desc: "" },
+  {
+    type: DistroType.FEDORA,
+    label: "Fedora",
+    logo: fedoraLogo,
+    desc: "Fedora and RHEL based distros (Fedora, Nobara, Rocky Linux etc)",
+  },
   { type: DistroType.ARCH, label: "Arch Linux", logo: archLogo },
   { type: DistroType.NIX, label: "NixOS", logo: nixLogo },
   { type: DistroType.OTHER, label: "Other", logo: linuxLogo },
@@ -192,7 +197,7 @@ function InstallationDetails(props: InstallationDetailsProps) {
         aria-labelledby={`installation-${props.distro.type}`}
         class="min-h-64 min-w-0 gap-0 overflow-hidden py-0"
       >
-        <CardHeader class="grid-cols-[auto_1fr] items-center gap-4 border-b px-6 py-5">
+        <CardHeader class="grid-cols-[auto_1fr] items-center gap-4 border-b px-6 pt-5 pb-2!">
           <img
             alt={props.distro.label}
             class="w-10 object-contain"
@@ -266,7 +271,9 @@ export function AppInstallationInstructions() {
                     <span class="text-xl font-semibold">{distro.label}</span>
                     <Show when={"desc" in distro && distro.desc} keyed>
                       {(desc) => (
-                        <span class="text-xl font-semibold">{desc}</span>
+                        <span class="text-xs text-muted-foreground">
+                          {desc}
+                        </span>
                       )}
                     </Show>
                   </button>
