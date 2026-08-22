@@ -250,7 +250,7 @@ export function AppInstallationInstructions() {
             style={selectorTransition.style()}
           >
             <p class="mb-6 text-muted-foreground">Select your distro</p>
-            <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div class="grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               <For each={SUPPORTED_DISTROS}>
                 {(distro) => (
                   <button
