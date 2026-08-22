@@ -161,7 +161,7 @@ function renderMarkdown(
           if (prev.nodeName.toLowerCase() !== "h2") {
             prev.remove();
           } else {
-            const installation = prev.ownerDocument!.createElement("span");
+            const installation = prev.ownerDocument!.createElement("div");
             installation.dataset.solidSlot = APP_INSTALLATION_ID;
             prev.replaceWith(installation);
             prev = null;
