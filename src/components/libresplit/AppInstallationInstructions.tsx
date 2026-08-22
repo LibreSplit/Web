@@ -31,7 +31,7 @@ const SUPPORTED_DISTROS = [
     type: DistroType.FEDORA,
     label: "Fedora",
     logo: fedoraLogo,
-    desc: "Fedora and RHEL based distros (Fedora, Nobara, Rocky Linux etc)",
+    desc: "Fedora and RHEL based distros (Fedora, Nobara, Rocky Linux, etc.)",
   },
   { type: DistroType.ARCH, label: "Arch Linux", logo: archLogo },
   { type: DistroType.NIX, label: "NixOS", logo: nixLogo },
