@@ -1,15 +1,16 @@
 import DOMPurify, {
   type UponSanitizeAttributeHook,
+  type UponSanitizeAttributeHookEvent,
   type UponSanitizeElementHook,
   type UponSanitizeElementHookEvent,
 } from "dompurify";
-import { Marked } from "marked";
+import { Marked, type HooksObject } from "marked";
 import { gfmHeadingId } from "marked-gfm-heading-id";
 import { markedHighlight } from "marked-highlight";
 import Prism from "prismjs";
 
 import "prism-themes/themes/prism-vsc-dark-plus.css";
-import { createEffect, createMemo, onCleanup } from "solid-js";
+import { createMemo } from "solid-js";
 import "prismjs/components/prism-bash";
 import "prismjs/components/prism-c";
 import "prismjs/components/prism-cpp";
@@ -18,34 +19,22 @@ import "prismjs/components/prism-lua";
 import "prismjs/components/prism-rust";
 import "prismjs/components/prism-toml";
 import "prismjs/components/prism-yaml";
-import { render } from "solid-js/web";
-
-import { AppInstallationInstructions } from "@/components/libresplit/AppInstallationInstructions";
 
 interface MarkdownProps {
   content: string;
   sourceUrl: string;
-  isHomePage: boolean;
+  markedHooks?: HooksObject<string, string>;
+  uponSanitizeAttributeHook?: (
+    element: Element,
+    attribute: UponSanitizeAttributeHookEvent,
+  ) => void;
+  uponSanitizeElementHook?: (
+    node: Node,
+    event: UponSanitizeElementHookEvent,
+  ) => void;
 }
 
-const APP_INSTALLATION_ID = "app-installation-instructions";
-
-const markdown = new Marked(
-  { gfm: true, breaks: false },
-  gfmHeadingId(),
-  markedHighlight({
-    highlight(code, language) {
-      const lang = Prism.languages.hasOwnProperty(language)
-        ? language
-        : "plaintext";
-
-      const grammar = Prism.languages[lang];
-      return Prism.highlight(code, grammar, lang);
-    },
-  }),
-);
-
-function resolveImageSrc(value: string, sourceUrl: string) {
+export function resolveImageSrc(value: string, sourceUrl: string) {
   try {
     const url = new URL(value, sourceUrl);
     const [owner, repository, blob, reference, ...path] = url.pathname
@@ -71,7 +60,7 @@ function resolveImageSrc(value: string, sourceUrl: string) {
   return null;
 }
 
-function resolveImageSrcset(value: string, sourceUrl: string) {
+export function resolveImageSrcset(value: string, sourceUrl: string) {
   return value
     .split(",")
     .map((candidate) => {
@@ -84,22 +73,20 @@ function resolveImageSrcset(value: string, sourceUrl: string) {
     .join(", ");
 }
 
-function renderMarkdown(
-  content: string,
-  sourceUrl: string,
-  isHomePage: boolean,
-) {
-  let installSection = false;
-  const resolveImages: UponSanitizeAttributeHook = (element, attribute) => {
+function renderMarkdown(markdown: Marked, props: MarkdownProps) {
+  const resolveImages = (
+    element: Element,
+    attribute: UponSanitizeAttributeHookEvent,
+  ) => {
     if (element.tagName !== "IMG" && element.tagName !== "SOURCE") {
       return;
     }
 
     const resolvedValue =
       attribute.attrName === "src"
-        ? resolveImageSrc(attribute.attrValue, sourceUrl)
+        ? resolveImageSrc(attribute.attrValue, props.sourceUrl)
         : attribute.attrName === "srcset"
-          ? resolveImageSrcset(attribute.attrValue, sourceUrl)
+          ? resolveImageSrcset(attribute.attrValue, props.sourceUrl)
           : undefined;
 
     if (resolvedValue === null || resolvedValue === undefined) {
@@ -113,126 +100,61 @@ function renderMarkdown(
     }
   };
 
-  const identifyBadges = (
-    node: Element,
-    event: UponSanitizeElementHookEvent,
-  ) => {
-    if (event.tagName !== "img") {
-      return;
-    }
+  const resolveAttributes: UponSanitizeAttributeHook = (element, attribute) => {
+    resolveImages(element, attribute);
 
-    const src = node.getAttribute("src");
-    const resolvedSrc = src && resolveImageSrc(src, sourceUrl);
-    if (resolvedSrc && new URL(resolvedSrc).hostname === "img.shields.io") {
-      node.classList.add("markdown-badge");
-
-      if (node.parentElement?.tagName === "A") {
-        node.parentElement.classList.add("markdown-badge-link");
-      }
-    } else if (node.closest('p[align="center"]')) {
-      node.classList.add("max-md:w-full");
-    }
-  };
-
-  const identifyCustomHomepageElements = (
-    node: Element,
-    event: UponSanitizeElementHookEvent,
-  ) => {
-    // Remove the duplicate brand name header.
-    if (event.tagName === "h1" && node.firstChild?.nodeValue === "LibreSplit") {
-      node.remove();
-    }
-
-    // Remove the duplicate logo image.
-    const src = event.tagName === "img" ? node.getAttribute("src") : null;
-    if (isHomePage && src && src.toLowerCase().endsWith("libresplit.svg")) {
-      node.remove();
-    }
-
-    // Detect the readme's installation instructions section and replace it with a placeholder for our component
-    if (event.tagName === "h2") {
-      if (node.id === "installation") {
-        installSection = true;
-        return;
-      } else if (installSection) {
-        let prev = node.previousSibling;
-        while (prev) {
-          const next = prev.previousSibling;
-          if (prev.nodeName.toLowerCase() !== "h2") {
-            prev.remove();
-          } else {
-            const installation = prev.ownerDocument!.createElement("div");
-            installation.dataset.solidSlot = APP_INSTALLATION_ID;
-            prev.replaceWith(installation);
-            prev = null;
-            break;
-          }
-
-          prev = next;
-        }
-      }
-
-      installSection = false;
-    }
-
-    if (installSection) {
-      node.remove();
+    // Custom page handling
+    if (props.uponSanitizeAttributeHook !== undefined) {
+      props.uponSanitizeAttributeHook(element, attribute);
     }
   };
 
   const resolveElements: UponSanitizeElementHook = (node, event) => {
-    if (!(node instanceof Element)) {
-      return;
-    }
-
-    identifyBadges(node, event);
-
-    // Home page customization handling
-    if (isHomePage) {
-      identifyCustomHomepageElements(node, event);
+    // Custom page handling
+    if (props.uponSanitizeElementHook !== undefined) {
+      props.uponSanitizeElementHook(node, event);
     }
   };
 
-  DOMPurify.addHook("uponSanitizeAttribute", resolveImages);
+  DOMPurify.addHook("uponSanitizeAttribute", resolveAttributes);
   DOMPurify.addHook("uponSanitizeElement", resolveElements);
 
   try {
-    return DOMPurify.sanitize(markdown.parse(content, { async: false }));
+    return DOMPurify.sanitize(markdown.parse(props.content, { async: false }));
   } finally {
-    DOMPurify.removeHook("uponSanitizeAttribute", resolveImages);
+    DOMPurify.removeHook("uponSanitizeAttribute", resolveAttributes);
     DOMPurify.removeHook("uponSanitizeElement", resolveElements);
   }
 }
 
 export function Markdown(props: MarkdownProps) {
-  let article!: HTMLElement;
-  let disposeSlots: Array<() => void> = [];
-  const content = createMemo(() =>
-    renderMarkdown(props.content, props.sourceUrl, props.isHomePage),
+  const markdown = createMemo(
+    () =>
+      new Marked(
+        { gfm: true, breaks: false },
+        gfmHeadingId(),
+        markedHighlight({
+          highlight(code, language) {
+            const lang = Prism.languages.hasOwnProperty(language)
+              ? language
+              : "plaintext";
+
+            const grammar = Prism.languages[lang];
+            return Prism.highlight(code, grammar, lang);
+          },
+        }),
+        {
+          hooks: props.markedHooks,
+        },
+      ),
   );
 
-  createEffect(() => {
-    for (const dispose of disposeSlots) dispose();
+  const content = createMemo(() => renderMarkdown(markdown(), props));
 
-    disposeSlots = [];
-    article.innerHTML = content();
-
-    for (const slot of article.querySelectorAll<HTMLElement>(
-      `[data-solid-slot="${APP_INSTALLATION_ID}"]`,
-    )) {
-      disposeSlots.push(render(() => <AppInstallationInstructions />, slot));
-    }
-  });
-
-  onCleanup(() => {
-    for (const dispose of disposeSlots) dispose();
-  });
-
+  // oxlint-disable solid/no-innerhtml -- content is sanitizied by DOMPurify
   return (
     <article
-      ref={(element) => {
-        article = element;
-      }}
+      innerHTML={content()}
       class="markdown prose w-full max-w-none min-w-0 prose-neutral dark:prose-invert"
       on:error={{
         capture: true,

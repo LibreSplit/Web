@@ -1,6 +1,11 @@
 import { Skeleton } from "@kobalte/core/skeleton";
 import { useQuery } from "@tanstack/solid-query";
-import { Match, mergeProps, Switch } from "solid-js";
+import type {
+  UponSanitizeAttributeHookEvent,
+  UponSanitizeElementHookEvent,
+} from "dompurify";
+import type { HooksObject } from "marked";
+import { Match, Switch } from "solid-js";
 
 import { Markdown } from "@/lib/markdown";
 
@@ -16,13 +21,18 @@ async function fetchMarkdown(url: string): Promise<string> {
 
 interface AppGitHubGenericMarkdownProps {
   url: string;
-  isHomePage?: boolean;
+  markedHooks?: HooksObject<string, string>;
+  uponSanitizeAttributeHook?: (
+    element: Element,
+    attribute: UponSanitizeAttributeHookEvent,
+  ) => void;
+  uponSanitizeElementHook?: (
+    node: Node,
+    event: UponSanitizeElementHookEvent,
+  ) => void;
 }
 
-export function AppGitHubGenericMarkdown(
-  receivedProps: AppGitHubGenericMarkdownProps,
-) {
-  const props = mergeProps({ isHomePage: false }, receivedProps);
+export function AppGitHubGenericMarkdown(props: AppGitHubGenericMarkdownProps) {
   const query = useQuery(() => ({
     queryKey: [props.url],
     queryFn: () => fetchMarkdown(props.url),
@@ -43,7 +53,9 @@ export function AppGitHubGenericMarkdown(
             <Markdown
               content={data()}
               sourceUrl={props.url}
-              isHomePage={props.isHomePage}
+              markedHooks={props.markedHooks}
+              uponSanitizeAttributeHook={props.uponSanitizeAttributeHook}
+              uponSanitizeElementHook={props.uponSanitizeElementHook}
             />
           </div>
         )}
