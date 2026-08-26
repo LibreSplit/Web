@@ -1,3 +1,13 @@
+import bash from "@shikijs/langs/bash";
+import c from "@shikijs/langs/c";
+import cpp from "@shikijs/langs/cpp";
+import css from "@shikijs/langs/css";
+import json from "@shikijs/langs/json";
+import lua from "@shikijs/langs/lua";
+import rust from "@shikijs/langs/rust";
+import toml from "@shikijs/langs/toml";
+import yaml from "@shikijs/langs/yaml";
+import darkPlus from "@shikijs/themes/dark-plus";
 import DOMPurify, {
   type UponSanitizeAttributeHook,
   type UponSanitizeAttributeHookEvent,
@@ -7,18 +17,15 @@ import DOMPurify, {
 import { Marked, type HooksObject } from "marked";
 import { gfmHeadingId } from "marked-gfm-heading-id";
 import { markedHighlight } from "marked-highlight";
-import Prism from "prismjs";
-
-import "prism-themes/themes/prism-vsc-dark-plus.css";
+import { createJavaScriptRegexEngine } from "shiki";
+import { createHighlighterCoreSync } from "shiki/core";
 import { createMemo } from "solid-js";
-import "prismjs/components/prism-bash";
-import "prismjs/components/prism-c";
-import "prismjs/components/prism-cpp";
-import "prismjs/components/prism-json";
-import "prismjs/components/prism-lua";
-import "prismjs/components/prism-rust";
-import "prismjs/components/prism-toml";
-import "prismjs/components/prism-yaml";
+
+const shiki = createHighlighterCoreSync({
+  themes: [darkPlus],
+  langs: [bash, c, cpp, css, json, lua, rust, toml, yaml],
+  engine: createJavaScriptRegexEngine(),
+});
 
 interface MarkdownProps {
   content: string;
@@ -135,12 +142,15 @@ export function Markdown(props: MarkdownProps) {
         gfmHeadingId(),
         markedHighlight({
           highlight(code, language) {
-            const lang = Prism.languages.hasOwnProperty(language)
+            const lang = shiki.getLoadedLanguages().includes(language)
               ? language
               : "plaintext";
 
-            const grammar = Prism.languages[lang];
-            return Prism.highlight(code, grammar, lang);
+            return shiki.codeToHtml(code, {
+              lang: lang,
+              theme: darkPlus,
+              structure: "inline",
+            });
           },
         }),
         {

@@ -44,7 +44,7 @@ export function InstallationDetails(props: InstallationDetailsProps) {
     >
       <Button
         type="button"
-        class="mb-4 -ml-3 cursor-pointer"
+        class="mb-4 -ml-1 cursor-pointer"
         size="sm"
         variant="ghost"
         onClick={props.onBack}

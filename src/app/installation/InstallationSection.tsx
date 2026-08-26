@@ -27,7 +27,7 @@ export function InstallationSection() {
 
   return (
     <section alia-labelledby="installation">
-      <div class="not-prose grid w-full min-w-0">
+      <div class="grid w-full min-w-0">
         <Show when={selectorTransition.keepMounted()}>
           <section
             alia-hidden={showInstructions()}
@@ -35,7 +35,6 @@ export function InstallationSection() {
             class="col-start-1 row-start-1 min-w-0 origin-center will-change-[opacity,transform]"
             style={selectorTransition.style()}
           >
-            <p class="mb-6 text-muted-foreground">Select your distro</p>
             <div class="grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               <For each={SUPPORTED_DISTROS}>
                 {(distro) => (

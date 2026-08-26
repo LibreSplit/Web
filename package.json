@@ -29,15 +29,13 @@
     "marked": "^18.0.10",
     "marked-gfm-heading-id": "^4.1.4",
     "marked-highlight": "^2.2.4",
-    "prism-themes": "^1.9.0",
-    "prismjs": "^1.30.0",
+    "shiki": "^4.4.3",
     "solid-js": "^1.9.15",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.2.0",
-    "@types/prismjs": "^1.26.6",
     "eslint-plugin-solid": "^0.15.0",
     "oxfmt": "^0.64.0",
     "oxlint": "^1.79.0",

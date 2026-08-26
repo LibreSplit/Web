@@ -21,7 +21,7 @@ export default defineConfig({
     "import/no-unassigned-import": [
       "error",
       {
-        allow: ["**/*.css", "prismjs/components/*"],
+        allow: ["**/*.css"],
       },
     ],
     "typescript/consistent-type-definitions": ["error", "interface"],

@@ -3,6 +3,7 @@ import { Match, Switch } from "solid-js";
 
 import { GitHubIcon } from "@/assets/icons/GitHubIcon";
 import { buttonVariants } from "@/components/ui/button";
+import { CommandBlock } from "@/components/ui/CommandBlock";
 import { DistroType } from "@/lib/utils";
 
 export function InstallationInstructions(props: { distro: DistroType }) {
@@ -27,9 +28,9 @@ export function InstallationInstructions(props: { distro: DistroType }) {
           </a>
         </div>
         <p>Or install via CLI:</p>
-        <pre class="overflow-x-auto rounded-lg bg-zinc-950 p-4 text-sm text-zinc-100 shadow-inner">
-          <code>{`sudo dnf install "https://rpm.libresplit.org/libresplit.$(uname -m).rpm`}</code>
-        </pre>
+        <CommandBlock
+          command={`sudo dnf install "https://rpm.libresplit.org/libresplit.$(uname -m).rpm`}
+        />
         <p>
           Official RPM packages are signed with the{" "}
           <a
@@ -41,24 +42,20 @@ export function InstallationInstructions(props: { distro: DistroType }) {
           </a>
         </p>
         <p>You can verify the package using the following fingerprint:</p>
-        <pre class="overflow-x-auto rounded-lg bg-zinc-950 p-4 text-sm text-zinc-100 shadow-inner">
-          <code>{`AE81 2B2C ED7C D507 FCD1  B39E 10C0 57F4 106B 63CB`}</code>
-        </pre>
+        <CommandBlock command="AE81 2B2C ED7C D507 FCD1  B39E 10C0 57F4 106B 63CB" />
       </Match>
       <Match when={props.distro === DistroType.ARCH}>
         <p>
           LibreSplit is available on the Arch User Repository (AUR). You can
           install it with your AUR manager of choice:
         </p>
-        <pre class="overflow-x-auto rounded-lg bg-zinc-950 p-4 text-sm text-zinc-100 shadow-inner">
-          <code>
-            {`# using yay
+        <CommandBlock
+          command={`# using yay
 yay libresplit-git
 
 # using paru
 yay libresplit-git`}
-          </code>
-        </pre>
+        />
         <p>
           See the{" "}
           <a
