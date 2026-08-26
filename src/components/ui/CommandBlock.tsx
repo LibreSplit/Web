@@ -16,7 +16,7 @@ const shiki = createHighlighterCoreSync({
 
 export interface CommandBlockProps {
   /** The command to highlight - THIS IS NOT SANITIZED, DO NOT PASS USER CONTENT */
-  command: string;
+  command: string | string[];
 }
 
 export function CommandBlock(props: CommandBlockProps) {
@@ -24,16 +24,21 @@ export function CommandBlock(props: CommandBlockProps) {
   let copiedTimeout: ReturnType<typeof setTimeout> | undefined;
 
   const command = createMemo(() =>
-    shiki.codeToHtml(props.command, {
-      lang: "bash",
-      theme: darkPlus,
-      structure: "inline",
-    }),
+    shiki.codeToHtml(
+      Array.isArray(props.command) ? props.command.join("\n") : props.command,
+      {
+        lang: "bash",
+        theme: darkPlus,
+        structure: "inline",
+      },
+    ),
   );
 
   const copyCommand = async () => {
     try {
-      await navigator.clipboard.writeText(props.command);
+      await navigator.clipboard.writeText(
+        Array.isArray(props.command) ? props.command.join("\n") : props.command,
+      );
     } catch {
       return;
     }
