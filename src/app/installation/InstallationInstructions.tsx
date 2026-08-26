@@ -51,10 +51,10 @@ export function InstallationInstructions(props: { distro: DistroType }) {
         </p>
         <CommandBlock
           command={`# using yay
-yay libresplit-git
+yay -S libresplit-git
 
 # using paru
-yay libresplit-git`}
+paru -S libresplit-git`}
         />
         <p>
           See the{" "}
