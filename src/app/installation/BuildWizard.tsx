@@ -167,7 +167,7 @@ export function BuildWizard() {
           >
             <div
               data-step={step.position}
-              class="min-h-60 animate-in overflow-x-hidden overflow-y-auto overscroll-contain rounded-sm border bg-background p-5 duration-300 fade-in-0 motion-reduce:animate-none"
+              class="min-h-60 animate-in overflow-x-hidden overflow-y-auto rounded-sm border bg-background p-5 duration-300 fade-in-0 motion-reduce:animate-none"
               classList={{
                 "slide-in-from-right-4":
                   step.direction === StepDirection.FORWARD,
