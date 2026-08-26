@@ -137,7 +137,7 @@ export const DISTRO_DEPENDENCIES = [
     ],
     optionalPackages: ["glib-networking", "gvfs"],
     requiredCommand:
-      "sudo pacman -Syu --needed base-devel git gtk3 jansson libx11 luajit meson openssl",
+      "sudo pacman -S --needed base-devel git gtk3 jansson libx11 luajit meson openssl",
     optionalCommand: "sudo pacman -S --needed glib-networking gvfs",
     packageIndexUrl: "https://archlinux.org/packages/",
     packageUrl: (packageName) =>
