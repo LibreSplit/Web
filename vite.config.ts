@@ -15,8 +15,11 @@ export default defineConfig({
     sitemap({
       hostname: "https://libresplit.org",
       dynamicRoutes: [
+        "/installation",
         "/converter",
+        "/docs",
         "/docs/auto-splitters.md",
+        "/docs/auto-splitter-tips.md",
         "/docs/settings-keybinds.md",
         "/docs/split-files.md",
         "/docs/themes.md",
