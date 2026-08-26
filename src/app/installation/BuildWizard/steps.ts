@@ -6,7 +6,7 @@ import { StepDependencyOverview } from "@/app/installation/BuildWizard/StepDepen
 export interface BuildStep {
   title: string;
   description?: string;
-  command?: string;
+  command?: string | string[];
   content?: Component;
 }
 
@@ -19,7 +19,7 @@ export const BUILD_STEPS = [
     command: [
       "git clone https://github.com/LibreSplit/LibreSplit",
       "cd LibreSplit",
-    ].join("\n"),
+    ],
   },
   {
     title: "Configure a release build",

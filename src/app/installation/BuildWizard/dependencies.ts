@@ -64,10 +64,10 @@ export interface DistributionBuildInstructions {
   id: string;
   name: string;
   family: string;
-  requiredPackages: readonly string[];
-  optionalPackages: readonly string[];
-  requiredCommand: string;
-  optionalCommand: string;
+  requiredPackages: string[];
+  optionalPackages: string[];
+  requiredCommand: string | string[];
+  optionalCommand: string | string[];
   instructions?: string;
   packageIndexUrl: string;
   packageUrl: (packageName: string) => string;
@@ -112,8 +112,10 @@ export const DISTRO_DEPENDENCIES = [
       "meson",
     ],
     optionalPackages: ["glib-networking", "gvfs"],
-    requiredCommand:
-      "sudo apt update\nsudo apt install build-essential git libgtk-3-dev libjansson-dev libluajit-5.1-dev libssl-dev libx11-dev meson",
+    requiredCommand: [
+      "sudo apt update",
+      "sudo apt install build-essential git libgtk-3-dev libjansson-dev libluajit-5.1-dev libssl-dev libx11-dev meson",
+    ],
     optionalCommand: "sudo apt install glib-networking gvfs",
     packageIndexUrl: "https://packages.debian.org/",
     packageUrl: (packageName) =>
