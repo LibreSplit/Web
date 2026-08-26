@@ -66,6 +66,28 @@ export function BuildWizard() {
       }),
     );
 
+  const goTo = (position: number) =>
+    setStep(
+      produce((currentStep) => {
+        if (
+          (position === currentStep.position && !currentStep.showComplete) ||
+          position < 0 ||
+          position >= BUILD_STEPS.length
+        ) {
+          return;
+        }
+
+        currentStep.direction =
+          position < currentStep.position || currentStep.showComplete
+            ? StepDirection.BACK
+            : StepDirection.FORWARD;
+        currentStep.position = position;
+        currentStep.stepNum = position + 1;
+        currentStep.content = BUILD_STEPS[position];
+        currentStep.showComplete = false;
+      }),
+    );
+
   return (
     <Card class="overflow-hidden py-0">
       <CardHeader class="border-b bg-muted/30 p-6">
@@ -88,30 +110,40 @@ export function BuildWizard() {
               </p>
             </Show>
           </div>
-          <div
+          <nav
             class="grid gap-2"
             style={{
               "grid-template-columns": `repeat(${BUILD_STEPS.length}, minmax(0, 1fr))`,
             }}
-            role="progressbar"
-            aria-label="Build progress"
-            aria-valuemin="1"
-            aria-valuemax={BUILD_STEPS.length}
-            aria-valuenow={Math.min(step.stepNum, BUILD_STEPS.length)}
+            aria-label="Build steps"
           >
             <For each={BUILD_STEPS}>
-              {(_, index) => (
-                <span
-                  class="h-1.5 rounded-full transition-colors duration-300 motion-reduce:transition-none"
-                  classList={{
-                    "bg-primary": index() <= step.position,
-                    "bg-muted": index() > step.position,
-                  }}
-                  aria-hidden="true"
-                />
+              {(currentStep, index) => (
+                <button
+                  type="button"
+                  class="group flex h-5 cursor-pointer items-center rounded-sm focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+                  aria-label={`Go to ${currentStep.title}`}
+                  aria-current={
+                    index() === step.position && !step.showComplete
+                      ? "step"
+                      : undefined
+                  }
+                  aria-controls="build-step-panel"
+                  title={currentStep.title}
+                  onClick={() => goTo(index())}
+                >
+                  <span
+                    class="h-1.5 w-full rounded-full transition-[background-color,opacity] duration-300 group-hover:opacity-75 motion-reduce:transition-none"
+                    classList={{
+                      "bg-primary": index() <= step.position,
+                      "bg-muted": index() > step.position,
+                    }}
+                    aria-hidden="true"
+                  />
+                </button>
               )}
             </For>
-          </div>
+          </nav>
         </div>
         <div id="build-step-panel" aria-live="polite">
           <Show
