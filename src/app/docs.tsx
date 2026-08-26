@@ -10,9 +10,13 @@ import {
 const docs = [
   {
     title: "Auto Splitters",
-    description:
-      "Documentation and tips for creating auto splitters for LibreSplit.",
+    description: "Documentation for creating auto splitters for LibreSplit.",
     to: "/docs/auto-splitters.md",
+  },
+  {
+    title: "Auto Splitter Tips",
+    description: "Tips for creating auto splitters for LibreSplit",
+    to: "/docs/auto-splitter-tips.md",
   },
   {
     title: "Settings and Keybinds",
