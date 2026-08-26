@@ -1,5 +1,7 @@
 import { Route } from "@solidjs/router";
 
+import { Installation } from "@/app/installation";
+
 import { Converter } from "./app/converter";
 import { Docs } from "./app/docs";
 import { AutoSplitters } from "./app/docs/auto-splitters";
@@ -14,6 +16,7 @@ export default function AppRouter() {
   return (
     <>
       <Route path="/" component={Home} />
+      <Route path="/installation" component={Installation} />
       <Route path="/docs" component={Docs} />
       <Route path="/converter" component={Converter} />
 

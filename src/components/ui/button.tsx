@@ -60,6 +60,7 @@ function Button(props: ButtonProps) {
           size: local.size,
           class: local.class,
         }),
+        "cursor-pointer",
       )}
       {...rest}
     />

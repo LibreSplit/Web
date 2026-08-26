@@ -26,6 +26,7 @@ interface NavigationItem {
 
 const navigationItems: readonly NavigationItem[] = [
   { label: "Home", href: "/" },
+  { label: "Installation", href: "/installation" },
   { label: "Docs", href: "/docs", includesSubpaths: true },
   { label: "Converter", href: "/converter" },
 ];
