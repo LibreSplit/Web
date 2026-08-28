@@ -24,12 +24,10 @@ export const DistroType = {
 
 export type DistroType = (typeof DistroType)[keyof typeof DistroType];
 
-export type DistroLogo = Component<ComponentProps<"svg">>;
-
 export interface Distro {
   type: DistroType;
   label: string;
-  logo: DistroLogo;
+  logo: Component<ComponentProps<"svg">>;
   desc?: string;
 }
 
