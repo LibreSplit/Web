@@ -40,7 +40,7 @@ export function InstallationSection() {
                 {(distro) => (
                   <button
                     type="button"
-                    class="group flex min-h-64 cursor-pointer flex-col items-center justify-center gap-6 rounded-sm border bg-card p-6 text-center text-card-foreground shadow-sm transition-[border-color,box-shadow,translate,background-color] duration-200 hover:-translate-y-1 hover:border-primary/40 hover:bg-accent/30 hover:shadow-lg focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                    class="group grid min-h-64 cursor-pointer grid-rows-[6rem_auto_1fr] items-center justify-center gap-6 rounded-sm border bg-card p-6 text-center text-card-foreground shadow-sm transition-[border-color,box-shadow,translate,background-color] duration-200 hover:-translate-y-1 hover:border-primary/40 hover:bg-accent/30 hover:shadow-lg focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
                     onClick={() => {
                       setSelectedDistro(distro);
                       setShowInstructions(true);
@@ -54,13 +54,11 @@ export function InstallationSection() {
                       />
                     </span>
                     <span class="text-xl font-semibold">{distro.label}</span>
-                    <Show when={"desc" in distro && distro.desc} keyed>
-                      {(desc) => (
-                        <span class="text-xs text-muted-foreground">
-                          {desc}
-                        </span>
-                      )}
-                    </Show>
+                    <span class="text-xs text-muted-foreground">
+                      <Show when={"desc" in distro && distro.desc} keyed>
+                        {(desc) => desc}
+                      </Show>
+                    </span>
                   </button>
                 )}
               </For>
