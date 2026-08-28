@@ -1,5 +1,6 @@
 import { createTransition } from "@kobalte/core";
 import { createSignal, For, Show } from "solid-js";
+import { Dynamic } from "solid-js/web";
 
 import { InstallationDetails } from "@/app/installation/InstallationDetails";
 import { SUPPORTED_DISTROS, type Distro } from "@/lib/utils";
@@ -47,10 +48,10 @@ export function InstallationSection() {
                     }}
                   >
                     <span class="flex h-24 items-center justify-center">
-                      <img
-                        alt={distro.label}
+                      <Dynamic
+                        component={distro.logo}
+                        aria-hidden="true"
                         class="max-h-20 w-24 object-contain transition-transform duration-200 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
-                        src={distro.logo}
                       />
                     </span>
                     <span class="text-xl font-semibold">{distro.label}</span>

@@ -1,10 +1,11 @@
 import { type ClassValue, clsx } from "clsx";
+import type { Component, ComponentProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import archLogo from "@/assets/distros/arch-linux.svg";
-import fedoraLogo from "@/assets/distros/fedora.svg";
-import linuxLogo from "@/assets/distros/linux.svg";
-import nixLogo from "@/assets/distros/nixos.svg";
+import { ArchLinux } from "@/assets/distros/ArchLinux";
+import { Fedora } from "@/assets/distros/Fedora";
+import { Linux } from "@/assets/distros/Linux";
+import { NixOS } from "@/assets/distros/NixOS";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,10 +24,12 @@ export const DistroType = {
 
 export type DistroType = (typeof DistroType)[keyof typeof DistroType];
 
+export type DistroLogo = Component<ComponentProps<"svg">>;
+
 export interface Distro {
   type: DistroType;
   label: string;
-  logo: string;
+  logo: DistroLogo;
   desc?: string;
 }
 
@@ -34,10 +37,10 @@ export const SUPPORTED_DISTROS = [
   {
     type: DistroType.FEDORA,
     label: "Fedora",
-    logo: fedoraLogo,
+    logo: Fedora,
     desc: "Fedora and RHEL based distros (Fedora, Nobara, Rocky Linux, etc.)",
   },
-  { type: DistroType.ARCH, label: "Arch Linux", logo: archLogo },
-  { type: DistroType.NIX, label: "NixOS", logo: nixLogo },
-  { type: DistroType.OTHER, label: "Other", logo: linuxLogo },
+  { type: DistroType.ARCH, label: "Arch Linux", logo: ArchLinux },
+  { type: DistroType.NIX, label: "NixOS", logo: NixOS },
+  { type: DistroType.OTHER, label: "Other", logo: Linux },
 ] as const satisfies readonly Distro[];
