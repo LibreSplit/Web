@@ -1,6 +1,7 @@
 import { createFocusScope } from "@kobalte/core";
 import { ArrowLeft } from "lucide-solid";
 import { type JSX } from "solid-js";
+import { Dynamic } from "solid-js/web";
 
 import { InstallationInstructions } from "@/app/installation/InstallationInstructions";
 import { Button } from "@/components/ui/button";
@@ -58,10 +59,10 @@ export function InstallationDetails(props: InstallationDetailsProps) {
         class="min-h-64 min-w-0 gap-0 overflow-hidden py-0"
       >
         <CardHeader class="grid-cols-[auto_1fr] items-center gap-4 border-b px-6 pt-5 pb-2!">
-          <img
-            alt={props.distro.label}
+          <Dynamic
+            component={props.distro.logo}
+            aria-hidden="true"
             class="w-10 object-contain"
-            src={props.distro.logo}
           />
           <CardTitle>
             <h3 id={`installation-${props.distro.type}`} class="text-xl">
