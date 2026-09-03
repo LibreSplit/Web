@@ -11,9 +11,9 @@ export const DEPENDENCIES = [
     url: "https://gcc.gnu.org/",
   },
   {
-    name: "Git",
+    name: "cURL",
     purpose: "Downloads the source code",
-    url: "https://git-scm.com/",
+    url: "https://curl.se/",
   },
   {
     name: "Meson",
@@ -81,7 +81,7 @@ export const DISTRO_DEPENDENCIES = [
     requiredPackages: [
       "binutils",
       "gcc",
-      "git",
+      "curl",
       "gtk3-devel",
       "jansson-devel",
       "libX11-devel",
@@ -91,7 +91,7 @@ export const DISTRO_DEPENDENCIES = [
     ],
     optionalPackages: ["glib-networking", "gvfs"],
     requiredCommand:
-      "sudo dnf install binutils gcc git gtk3-devel jansson-devel libX11-devel luajit-devel meson openssl-devel",
+      "sudo dnf install binutils gcc curl gtk3-devel jansson-devel libX11-devel luajit-devel meson openssl-devel",
     optionalCommand: "sudo dnf install glib-networking gvfs",
     packageIndexUrl: "https://packages.fedoraproject.org/",
     packageUrl: (packageName) =>
@@ -103,7 +103,7 @@ export const DISTRO_DEPENDENCIES = [
     family: "Debian and Ubuntu based distros",
     requiredPackages: [
       "build-essential",
-      "git",
+      "curl",
       "libgtk-3-dev",
       "libjansson-dev",
       "libluajit-5.1-dev",
@@ -114,7 +114,7 @@ export const DISTRO_DEPENDENCIES = [
     optionalPackages: ["glib-networking", "gvfs"],
     requiredCommand: [
       "sudo apt update",
-      "sudo apt install build-essential git libgtk-3-dev libjansson-dev libluajit-5.1-dev libssl-dev libx11-dev meson",
+      "sudo apt install build-essential curl libgtk-3-dev libjansson-dev libluajit-5.1-dev libssl-dev libx11-dev meson",
     ],
     optionalCommand: "sudo apt install glib-networking gvfs",
     packageIndexUrl: "https://packages.debian.org/",
@@ -127,7 +127,7 @@ export const DISTRO_DEPENDENCIES = [
     family: "Arch based distros",
     requiredPackages: [
       "base-devel",
-      "git",
+      "curl",
       "gtk3",
       "jansson",
       "libx11",
@@ -137,7 +137,7 @@ export const DISTRO_DEPENDENCIES = [
     ],
     optionalPackages: ["glib-networking", "gvfs"],
     requiredCommand:
-      "sudo pacman -S --needed base-devel git gtk3 jansson libx11 luajit meson openssl",
+      "sudo pacman -S --needed base-devel curl gtk3 jansson libx11 luajit meson openssl",
     optionalCommand: "sudo pacman -S --needed glib-networking gvfs",
     packageIndexUrl: "https://archlinux.org/packages/",
     packageUrl: (packageName) =>
@@ -148,7 +148,7 @@ export const DISTRO_DEPENDENCIES = [
     name: "NixOS",
     family: "NixOS",
     requiredPackages: [
-      "git",
+      "curl",
       "meson",
       "ninja",
       "pkg-config",
@@ -160,9 +160,9 @@ export const DISTRO_DEPENDENCIES = [
     ],
     optionalPackages: ["gvfs", "glib-networking"],
     requiredCommand:
-      "nix-shell -p git meson ninja pkg-config gtk3 libx11 jansson luajit openssl",
+      "nix-shell -p curl meson ninja pkg-config gtk3 libx11 jansson luajit openssl",
     optionalCommand:
-      "nix-shell -p git meson ninja pkg-config gtk3 libx11 jansson luajit openssl gvfs glib-networking",
+      "nix-shell -p curl meson ninja pkg-config gtk3 libx11 jansson luajit openssl gvfs glib-networking",
     instructions:
       "Choose one temporary development shell before following the build steps. Nix's standard environment supplies the compiler and linker; the second shell adds the optional web-icon packages.",
     packageIndexUrl: "https://search.nixos.org/packages",
