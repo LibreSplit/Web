@@ -15,9 +15,10 @@ export const BUILD_STEPS = [
   { title: "Install dependencies", content: StepDependencyInstructions },
   {
     title: "Download the source",
-    description: "Download LibreSplit with git",
+    description: "Download LibreSplit",
     command: [
-      "git clone https://github.com/LibreSplit/LibreSplit",
+      "curl -fsSL https://api.github.com/repos/LibreSplit/LibreSplit/releases/latest | jq -r '.tarball_url' | xargs curl -fL -o libresplit-latest.tar.gz",
+      "mkdir -p LibreSplit && tar -xzf libresplit-latest.tar.gz -C LibreSplit --strip-components=1",
       "cd LibreSplit",
     ],
   },
