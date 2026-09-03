@@ -17,7 +17,10 @@ export const BUILD_STEPS = [
     title: "Download the source",
     description: "Download LibreSplit",
     command: [
+      "# Download the latest release",
       "curl -fsSL https://api.github.com/repos/LibreSplit/LibreSplit/releases/latest | jq -r '.tarball_url' | xargs curl -fL -o libresplit-latest.tar.gz",
+      "",
+      "# Extract to a LibreSplit directory and enter the directory",
       "mkdir -p LibreSplit && tar -xzf libresplit-latest.tar.gz -C LibreSplit --strip-components=1",
       "cd LibreSplit",
     ],
