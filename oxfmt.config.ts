@@ -1,19 +1,23 @@
-{
-  "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "printWidth": 80,
-  "tabWidth": 2,
-  "useTabs": false,
-  "semi": true,
-  "singleQuote": false,
-  "bracketSameLine": false,
-  "trailingComma": "all",
-  "sortImports": true,
-  "sortPackageJson": true,
-  "sortTailwindcss": {
-    "stylesheet": "./src/index.css",
-    "functions": ["cn", "clsx", "cva"]
+import { defineConfig } from "oxfmt";
+
+export default defineConfig({
+  printWidth: 80,
+  tabWidth: 2,
+  useTabs: false,
+  semi: true,
+  singleQuote: false,
+  bracketSameLine: false,
+  trailingComma: "all",
+
+  sortImports: true,
+  sortPackageJson: true,
+
+  sortTailwindcss: {
+    stylesheet: "./src/index.css",
+    functions: ["cn", "clsx", "cva"],
   },
-  "ignorePatterns": [
+
+  ignorePatterns: [
     "node_modules",
     "dist",
     ".github",
@@ -43,6 +47,6 @@
     "*.tar",
     "*.gz",
     "*.wasm",
-    "README.md"
-  ]
-}
+    "README.md",
+  ],
+});
