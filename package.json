@@ -8,9 +8,9 @@
     "test": "npm run format:test && tsc -b && npm run lint",
     "lint": "npx oxlint -c oxlint.config.ts src vite.config.ts",
     "lint:fix": "npm run lint -- --fix",
-    "format:test": "oxfmt -c .oxfmtrc.json --check .",
-    "format:write": "oxfmt -c .oxfmtrc.json --write .",
-    "format:write:files": "oxfmt -c .oxfmtrc.json",
+    "format:test": "oxfmt -c oxfmt.config.ts --check .",
+    "format:write": "oxfmt -c oxfmt.config.ts --write .",
+    "format:write:files": "oxfmt -c oxfmt.config.ts",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
